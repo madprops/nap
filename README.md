@@ -48,7 +48,7 @@ let path = arg("path")
 
 These are properties that are handled internally, but will still be available to the user.
 
-`used (bool):` If the argument was used at all.
+`used (bool):` If the argument was used at all. For instance if "-b" was provided, used will be true.
 
 `value (string):` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string.
 
