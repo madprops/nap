@@ -71,77 +71,33 @@ proc add_arg*(name:string="", kind:string="", required:bool=false, help:string="
   opts.add(NapArg(name:name, kind:kind, ikind:ikind, 
     required:required, help:help, value:"", used:false))
 
-# Check and update a supplied argument
-proc update_arg(p: OptParser) =
-  
-  if p.kind == cmdArgument:
-    if num_arguments <= 0:
-      tail.add(p.key.strip())
-      return
+proc argstr(p: OptParser): (string, string) =
+  if p.kind == cmdShortOption:
+    if p.val == "":
+      return (&"-{p.key}", "flag")
+    else:
+      return (&"-{p.key}", "value flag")
+  elif p.kind == cmdLongOption:
+    if p.val == "":
+      return (&"--{p.key}", "flag")
+    else:
+      return (&"--{p.key}", "value flag")
+  else:
+    return (p.key, "argument")
 
-  for opt in opts.mitems:
-    if not opt.used and (opt.kind == "argument" or
-      p.key == opt.name):
-
-      # Do some checks
-
-      if p.kind == cmdShortOption:
-        if opt.ikind != "sflag" and
-          opt.ikind != "svalue":
-            continue
-      elif p.kind == cmdLongOption:
-        if opt.ikind != "lflag" and
-          opt.ikind != "lvalue":
-            continue
-      elif p.kind == cmdArgument:
-        if opt.kind != "argument":
-          continue
-      
-      # Update
-
-      opt.used = true
-
-      if p.kind == cmdArgument:
-        opt.value = p.key.strip()
-        dec(num_arguments)
-      else:
-        opt.value = p.val.strip()
-      break
-
-# Check for missing or
-# unecessary values or
-# missing arguments
-proc check_args() =
-  var exit = false
-  var nargs = 0
-  for opt in opts:
-
-    if opt.kind == "argument":
-      if opt.used: inc(nargs)
-
-    # Check for required values
-    if opt.kind == "value":
-        if (opt.used and opt.value == "") or
-          (opt.required and not opt.used):
-            echo &"'{opt.name}' needs a value."
-            exit = true
-    
-    # Check for unecessary values
-    elif opt.kind == "flag":
-      if opt.value != "":
-        echo &"'{opt.name}' does not accept a value."
-        exit = true
-  
-  if num_required_arguments > nargs:
-    var n = num_required_arguments
-    for opt in opts:
-      if opt.kind == "argument":
-        if not opt.used and n > 0:
-          echo &"'{opt.name}' argument is required."
-          dec(n)
-    exit = true
-      
-  if exit: quit(0)
+proc argstr2(p: NapArg): (string, string) =
+  if p.kind == "flag":
+    if p.ikind == "sflag":
+      return (&"-{p.name}", "flag")
+    elif p.ikind == "lflag":
+      return (&"--{p.name}", "flag")
+  elif p.kind == "value":
+    if p.ikind == "svalue":
+      return (&"-{p.name}", "value flag")
+    elif p.ikind == "lvalue":
+      return (&"--{p.name}", "value flag")
+  else:
+    return (p.name, "argument")
 
 # Print the supplied user defined version
 proc print_version(version: string) =
@@ -213,6 +169,83 @@ proc print_help(version: string) =
     for opt in arguments:
         echo &"  {opt.name}{rs(opt.required)}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
+
+# Check and update a supplied argument
+proc update_arg(p: OptParser) =
+  
+  if p.kind == cmdArgument:
+    if num_arguments <= 0:
+      tail.add(p.key.strip())
+      return
+
+  for opt in opts.mitems:
+    if not opt.used and (opt.kind == "argument" or
+      p.key == opt.name):
+
+      # Do some checks
+
+      if p.kind == cmdShortOption:
+        if opt.ikind != "sflag" and
+          opt.ikind != "svalue":
+            continue
+      elif p.kind == cmdLongOption:
+        if opt.ikind != "lflag" and
+          opt.ikind != "lvalue":
+            continue
+      elif p.kind == cmdArgument:
+        if opt.kind != "argument":
+          continue
+      
+      # Update
+
+      opt.used = true
+
+      if p.kind == cmdArgument:
+        opt.value = p.key.strip()
+        dec(num_arguments)
+      else:
+        opt.value = p.val.strip()
+      return
+    
+  # If no match then exit
+  let ax = argstr(p)
+  bye(&"'{ax[0]}' is not a valid {ax[1]}.")
+
+# Check for missing or
+# unecessary values or
+# missing arguments
+proc check_args() =
+  var exit = false
+  var nargs = 0
+  for opt in opts:
+
+    if opt.kind == "argument":
+      if opt.used: inc(nargs)
+
+    # Check for required values
+    if opt.kind == "value":
+        if (opt.used and opt.value == "") or
+          (opt.required and not opt.used):
+            echo &"'{argstr2(opt)[0]}' needs a value."
+            exit = true
+    
+    # Check for unecessary values
+    elif opt.kind == "flag":
+      if opt.value != "":
+        echo &"'{argstr2(opt)[0]}' does not accept a value."
+        exit = true
+  
+  if num_required_arguments > nargs:
+    var n = num_required_arguments
+    for opt in opts:
+      if opt.kind == "argument":
+        if not opt.used and n > 0:
+          let ax = argstr2(opt)
+          echo &"'{ax[0]}' {ax[1]} is required."
+          dec(n)
+    exit = true
+      
+  if exit: quit(0)
     
 # Parse the arguments
 # Accepts a version string
