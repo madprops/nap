@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "madprops"
-description   = "A new awesome nimble package"
+description   = "Argument parser"
 license       = "MIT"
 srcDir        = "src"
 
