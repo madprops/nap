@@ -5,7 +5,7 @@ import strformat
 import terminal
 
 # Argument object
-type NapArg* = object
+type NapArg* = ref object
   name*: string
   kind*: string
   ikind*: string
@@ -37,13 +37,7 @@ proc arg*(key:string): NapArg =
   for opt in opts:
     if key == opt.name:
       return opt
-
-# Return a reference to an argument object
-proc argref*(key:string): ptr NapArg =
-  for opt in opts.mitems:
-    if key == opt.name:
-      var adrs = unsafeAddr opt
-      return adrs
+  return NapArg(name:"--undefined--")
 
 # Return all argument objects
 proc args*(): seq[NapArg] =
@@ -55,7 +49,7 @@ proc add_arg*(name="", kind="", required=false, help="", value="") =
   var kind = kind.strip()
   var help = help.strip()
 
-  if arg(name).name != "":
+  if arg(name).name != "--undefined--":
     bye(&"{name} argument can't be registered twice.")
 
   if name == "":
@@ -92,9 +86,9 @@ proc add_arg*(name="", kind="", required=false, help="", value="") =
     required:required, help:help, value:value, used:false))
 
 # Same as add_arg but returns a reference to the argument object
-proc use_arg*(name="", kind="", required=false, help="", value=""): ptr NapArg =
+proc use_arg*(name="", kind="", required=false, help="", value=""): NapArg =
   add_arg(name, kind, required, help, value)
-  argref(name.strip())
+  arg(name.strip())
 
 # Util to change kinds to strings
 proc argstr(p: OptParser): (string, string) =
@@ -199,7 +193,6 @@ proc print_help(version: string) =
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
-  
   if p.kind == cmdArgument:
     if num_arguments <= 0:
       tail.add(p.key.strip())

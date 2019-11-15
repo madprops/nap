@@ -72,13 +72,11 @@ These are properties that are handled internally, but will still be available to
 
 `add_arg:` Register an argument to be considered.
 
-`use_arg:` Same as add_arg but it returns a reference to the argument object.
+`use_arg:` Same as add_arg but it returns the argument object.
 
 `parse_args:` Do the processing. Optional version/info string and parameters list.
 
 `arg:` Get an argument object.
-
-`argref:` Same as arg but it returns a reference to the argument object.
 
 `args:` Get all argument objects.
 
