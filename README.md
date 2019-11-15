@@ -9,7 +9,9 @@ the user decide on how to use it.
 
 Register arguments:
 >add_arg(name="foo", kind="flag", required="true", help="Foo it")
+
 >add_arg(name="bar", kind="value", required="false", help="Heaps Alloy")
+
 >add_arg(name="path", kind="argument", required="true", help="Pathfinder Dir")
 
 When ready then check arguments:
