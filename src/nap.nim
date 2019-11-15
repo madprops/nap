@@ -26,7 +26,7 @@ var tail: seq[string]
 var opts: seq[NapArg]
 
 # Available kinds of arguments
-var kinds = ["flag", "value", "argument"]
+let kinds = ["flag", "value", "argument"]
 
 # Centralized termination echo
 proc bye(message: string) =
