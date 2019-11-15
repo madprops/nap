@@ -9,7 +9,7 @@ add_arg(name="boo", kind="flag", help="Scare for life")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
 add_arg(name="foo", kind="value", required=true, help="Fork the fork")
 add_arg(name="path", kind="argument", required=true)
-add_arg(name="tree", kind="argument", required=false, help="For the health")
+let tree = use_arg(name="tree", kind="argument", help="For the health", value="palmera")
 
 # Process arguments
 
@@ -31,27 +31,26 @@ echo ""
 
 let foo = arg("foo")
 if foo.used:
-    echo "foo:"
-    echo foo.value
-    echo ""
+  echo "foo:"
+  echo foo.value
+  echo ""
 
 let x = arg("x")
 if x.used:
-    echo "x:"
-    echo x.value
-    echo ""
+  echo "x:"
+  echo x.value
+  echo ""
 
 let path = arg("path")
 if path.used:
-    echo "path:"
-    echo path.value
-    echo ""
+  echo "path:"
+  echo path.value
+  echo ""
 
-let tree = arg("tree")
-if tree.used:
-    echo "tree:"
-    echo tree.value
-    echo ""
+echo "tree:"
+tree.value.add(" (modified)")
+echo tree.value
+echo ""
 
 # Rest of 
 # the arguments

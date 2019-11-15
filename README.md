@@ -14,6 +14,8 @@ add_arg(name="foo", kind="flag", help="Foo it")
 add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
 
 add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
+
+let c = use_arg(name="catnip" kind="value" value="cosmic")
 ```
 
 When ready then check arguments:
@@ -38,6 +40,10 @@ let path = argval_string("path", "/home/me/code")
 let tail = argtail()
 for argument in tail:
     echo argument
+
+# This will either print "cosmic" 
+# or a user submitted value
+echo c.value
 ```
 
 ## Properties
@@ -49,6 +55,8 @@ for argument in tail:
 `required (bool):` Whether the value is required. This only affects "value" and "argument" since there's no point in making a flag that doesn't take value required.
 
 `help (string):` The message shown for the argument when using --help
+
+`value (string):` A default value that is set initially on the object. Defaults to an empty string.
 
 ### Automatic Properties
 
@@ -64,9 +72,13 @@ These are properties that are handled internally, but will still be available to
 
 `add_arg:` Register an argument to be considered.
 
+`use_arg:` Same as add_arg but it returns a reference to the argument object.
+
 `parse_args:` Do the processing. Optional version/info string and parameters list.
 
 `arg:` Get an argument object.
+
+`argref:` Same as arg but it returns a reference to the argument object.
 
 `args:` Get all argument objects.
 

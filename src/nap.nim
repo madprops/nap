@@ -32,11 +32,31 @@ proc bye(message: string) =
   echo message
   quit(0)
 
+# Return an argument object
+proc arg*(key:string): NapArg =
+  for opt in opts:
+    if key == opt.name:
+      return opt
+
+# Return a reference to an argument object
+proc argref*(key:string): ptr NapArg =
+  for opt in opts.mitems:
+    if key == opt.name:
+      var adrs = unsafeAddr opt
+      return adrs
+
+# Return all argument objects
+proc args*(): seq[NapArg] =
+  return opts
+
 # Register an argument to be considered
-proc add_arg*(name:string="", kind:string="", required:bool=false, help:string="") =
+proc add_arg*(name="", kind="", required=false, help="", value="") =
   var name = name.strip()
   var kind = kind.strip()
   var help = help.strip()
+
+  if arg(name).name != "":
+    bye(&"{name} argument can't be registered twice.")
 
   if name == "":
     bye("Argument's name can't be empty.")
@@ -61,7 +81,7 @@ proc add_arg*(name:string="", kind:string="", required:bool=false, help:string="
   elif kind == "value":
     ikind = if name.len() == 1: "svalue"
       else: "lvalue"
-  
+
   elif kind == "argument":
       ikind = "argument"
       inc(num_arguments)
@@ -69,8 +89,14 @@ proc add_arg*(name:string="", kind:string="", required:bool=false, help:string="
         inc(num_required_arguments)
   
   opts.add(NapArg(name:name, kind:kind, ikind:ikind, 
-    required:required, help:help, value:"", used:false))
+    required:required, help:help, value:value, used:false))
 
+# Same as add_arg but returns a reference to the argument object
+proc use_arg*(name="", kind="", required=false, help="", value=""): ptr NapArg =
+  add_arg(name, kind, required, help, value)
+  argref(name.strip())
+
+# Util to change kinds to strings
 proc argstr(p: OptParser): (string, string) =
   if p.kind == cmdShortOption:
     if p.val == "":
@@ -84,7 +110,8 @@ proc argstr(p: OptParser): (string, string) =
       return (&"--{p.key}", "value flag")
   else:
     return (p.key, "argument")
-
+        
+# Util to change kinds to strings
 proc argstr2(p: NapArg): (string, string) =
   if p.kind == "flag":
     if p.ikind == "sflag":
@@ -269,16 +296,6 @@ proc parse_args*(version="No version information.",
       update_arg(p)
   
   check_args()
-
-# Return an argument object
-proc arg*(key:string): NapArg =
-  for opt in opts:
-    if key == opt.name:
-      return opt
-
-# Return all argument objects
-proc args*(): seq[NapArg] =
-  return opts
 
 # Return the rest of  the arguments
 proc argtail*(): seq[string] =
