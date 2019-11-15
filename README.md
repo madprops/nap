@@ -34,23 +34,23 @@ let path = arg("path")
 
 ## Properties
 
-`name:` The name of the argument. If the name is "bar" then it will be used as "--bar", if the name is "b" then it will be used as "-b". This means there's no need to specify if it's a short or long flag, as this is deduced automatically. In the case of arguments the name will be used in order. For instance if you register two arguments: "path" and "file", the first two arguments provided will fill those.
+`name (string):` The name of the argument. If the name is "bar" then it will be used as "--bar", if the name is "b" then it will be used as "-b". This means there's no need to specify if it's a short or long flag, as this is deduced automatically. In the case of arguments the name will be used in order. For instance if you register two arguments: "path" and "file", the first two arguments provided will fill those.
 
-`kind:` Available kinds are "flag", "value", and "argument". Flags are "-a" and "--abc". Values are "-a=x" and "--abc=x". Arguments are any unflagged input "myprogram /some/path"
+`kind (string):` Available kinds are "flag", "value", and "argument". Flags are "-a" and "--abc". Values are "-a=x" and "--abc=x". Arguments are any unflagged input "myprogram /some/path"
 
-`required:` Whether the value is required. This only affects "value" and "argument" since there's no point in making a flag that doesn't take value required.
+`required (bool):` Whether the value is required. This only affects "value" and "argument" since there's no point in making a flag that doesn't take value required.
 
-`help:` The message shown for the argument when using --help
+`help (string):` The message shown for the argument when using --help
 
 ### Automatic Properties
 
 These are properties that are handled internally. But will still be available for the user.
 
-`used:` If the argument was used at all.
+`used (bool):` If the argument was used at all.
 
-`value:` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string.
+`value (string):` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string.
 
-`ikind:` This is used internally to differentiate between different kinds of flag and value kinds.
+`ikind (string):` This is used internally to differentiate between different kinds of flag and value kinds.
 
 ## Parsing
 
