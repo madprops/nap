@@ -17,6 +17,8 @@ parse_args()
 
 # Use the result
 
+echo ""
+
 let a = arg("a")
 echo "a:"
 echo a.used
