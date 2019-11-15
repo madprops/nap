@@ -3,7 +3,6 @@ import parseopt
 import strutils
 import strformat
 import terminal
-import tables
 
 # Argument object
 type NapArg* = object
