@@ -3,6 +3,7 @@ import parseopt
 import strutils
 import strformat
 import terminal
+import tables
 
 # Argument object
 type NapArg* = object
@@ -181,15 +182,17 @@ proc print_help(version: string) =
     of "argument":
       arguments.add(opt)
   
+  var rs = {true:" (Required)", false:""}.toTable
+  
   # Print flags
   if sflags.len() > 0 or lflags.len() > 0:
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
       &"Flags:{ansiResetCode}\n"
     for opt in sflags:
-        echo &"  -{opt.name}"
+        echo &"  -{opt.name}{rs[opt.required]}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
     for opt in lflags:
-        echo &"  --{opt.name}"
+        echo &"  --{opt.name}{rs[opt.required]}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
 
   # Print values
@@ -197,10 +200,10 @@ proc print_help(version: string) =
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
       &"Values:{ansiResetCode}\n"
     for opt in svalues:
-        echo &"  -{opt.name}"
+        echo &"  -{opt.name}{rs[opt.required]}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
     for opt in lvalues:
-        echo &"  --{opt.name}"
+        echo &"  --{opt.name}{rs[opt.required]}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
   
   # Print arguments
@@ -208,7 +211,7 @@ proc print_help(version: string) =
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
       &"Arguments:{ansiResetCode}\n"
     for opt in arguments:
-        echo &"  {opt.name}"
+        echo &"  {opt.name}{rs[opt.required]}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
     
 # Parse the arguments
