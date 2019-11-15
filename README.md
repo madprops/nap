@@ -9,7 +9,7 @@ the user decide on how to use it.
 
 Register arguments:
 ```nim
-add_arg(name="foo", kind="flag", required=true, help="Foo it")
+add_arg(name="foo", kind="flag", help="Foo it")
 
 add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
 
