@@ -56,16 +56,12 @@ proc add_arg*(name:string="", kind:string="", required:bool=false, help:string="
   var ikind: string
     
   if kind == "flag":
-    if name.len() == 1:
-      ikind = "sflag"
-    else:
-      ikind = "lflag"
+    ikind = if name.len() == 1: "sflag"
+      else: "lflag"
     
   elif kind == "value":
-    if name.len() == 1:
-      ikind = "svalue"
-    else:
-      ikind = "lvalue"
+    ikind = if name.len() == 1: "svalue"
+      else: "lvalue"
   
   elif kind == "argument":
       ikind = "argument"
@@ -103,6 +99,7 @@ proc update_arg(p: OptParser) =
           continue
       
       # Update
+
       opt.used = true
 
       if p.kind == cmdArgument:
@@ -181,8 +178,9 @@ proc print_help(version: string) =
         lvalues.add(opt)
     of "argument":
       arguments.add(opt)
-  
-  var rs = {true:" (Required)", false:""}.toTable
+
+  proc rs(required: bool): string =
+    if required: " (Required)" else: ""
 
   proc hs(help: string): string =
     if help != "": help else: "I don't know what this does"
@@ -192,10 +190,10 @@ proc print_help(version: string) =
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
       &"Flags:{ansiResetCode}\n"
     for opt in sflags:
-        echo &"  -{opt.name}{rs[opt.required]}"
+        echo &"  -{opt.name}{rs(opt.required)}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
     for opt in lflags:
-        echo &"  --{opt.name}{rs[opt.required]}"
+        echo &"  --{opt.name}{rs(opt.required)}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
 
   # Print values
@@ -203,10 +201,10 @@ proc print_help(version: string) =
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
       &"Values:{ansiResetCode}\n"
     for opt in svalues:
-        echo &"  -{opt.name}{rs[opt.required]}"
+        echo &"  -{opt.name}{rs(opt.required)}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
     for opt in lvalues:
-        echo &"  --{opt.name}{rs[opt.required]}"
+        echo &"  --{opt.name}{rs(opt.required)}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
   
   # Print arguments
@@ -214,7 +212,7 @@ proc print_help(version: string) =
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
       &"Arguments:{ansiResetCode}\n"
     for opt in arguments:
-        echo &"  {opt.name}{rs[opt.required]}"
+        echo &"  {opt.name}{rs(opt.required)}"
         echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
     
 # Parse the arguments
@@ -246,6 +244,10 @@ proc arg*(key:string): NapArg =
   for opt in opts:
     if key == opt.name:
       return opt
+
+# Return all argument objects
+proc args*(): seq[NapArg] =
+  return opts
 
 # Return the rest of  the arguments
 proc argtail*(): seq[string] =

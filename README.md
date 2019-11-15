@@ -67,6 +67,8 @@ These are properties that are handled internally, but will still be available to
 
 `arg:` Get an argument object.
 
+`args:` Get all argument objects.
+
 `argtail:` Get the rest of the arguments.
 
 ## Parsing
