@@ -52,3 +52,10 @@ if tree.used:
     echo "tree:"
     echo tree.value
     echo ""
+
+# Rest of 
+# the arguments
+echo "tail:"
+echo argtail()
+
+echo ""

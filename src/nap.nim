@@ -18,6 +18,9 @@ type NapArg* = object
 var num_arguments = 0
 var num_required_arguments = 0
 
+# Rest of arguments
+var tail: seq[string]
+
 # Array that holds all the arguments
 var opts: seq[NapArg]
 
@@ -74,6 +77,12 @@ proc add_arg*(name:string="", kind:string="", required:bool=false, help:string="
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
+  
+  if p.kind == cmdArgument:
+    if num_arguments <= 0:
+      tail.add(p.key.strip())
+      return
+
   for opt in opts.mitems:
     if not opt.used and (opt.kind == "argument" or
       p.key == opt.name):
@@ -90,8 +99,6 @@ proc update_arg(p: OptParser) =
             continue
       elif p.kind == cmdArgument:
         if opt.kind != "argument":
-          continue
-        if num_arguments <= 0:
           continue
       
       # Update
@@ -229,3 +236,6 @@ proc arg*(key:string): NapArg =
   for opt in opts:
     if key == opt.name:
       return opt
+
+proc argtail*(): seq[string] =
+  return tail

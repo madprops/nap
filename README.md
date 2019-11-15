@@ -32,6 +32,10 @@ if bar.used:
 
 let path = arg("path")
 echo path.value
+
+let tail = argtail()
+for argument in rest:
+    echo argument
 ```
 
 ## Properties
@@ -53,6 +57,16 @@ These are properties that are handled internally, but will still be available to
 `value (string):` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string.
 
 `ikind (string):` This is used internally to differentiate between different kinds of flag and value kinds.
+
+## Methods
+
+`add_arg:` Register an argument to be considered.
+
+`parse_args:` Do the processing. Optional version/info string and parameters list.
+
+`arg:` Get an argument object.
+
+`argtail:` Get the rest of the arguments.
 
 ## Parsing
 
