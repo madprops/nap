@@ -86,6 +86,10 @@ if a) the argument was used and b) the value can be parsed correctly.
 
 `argval_string:` Return value unchanged.
 
+## Example
+
+`let n = argval_int("age", 30)`
+
 ## Help
 
 Using --help will show a summary of all available arguments. As well as print the version at the top.
