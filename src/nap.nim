@@ -183,6 +183,9 @@ proc print_help(version: string) =
       arguments.add(opt)
   
   var rs = {true:" (Required)", false:""}.toTable
+
+  proc hs(help: string): string =
+    if help != "": help else: "I don't know what this does"
   
   # Print flags
   if sflags.len() > 0 or lflags.len() > 0:
@@ -190,10 +193,10 @@ proc print_help(version: string) =
       &"Flags:{ansiResetCode}\n"
     for opt in sflags:
         echo &"  -{opt.name}{rs[opt.required]}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
     for opt in lflags:
         echo &"  --{opt.name}{rs[opt.required]}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
@@ -201,10 +204,10 @@ proc print_help(version: string) =
       &"Values:{ansiResetCode}\n"
     for opt in svalues:
         echo &"  -{opt.name}{rs[opt.required]}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
     for opt in lvalues:
         echo &"  --{opt.name}{rs[opt.required]}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
   
   # Print arguments
   if arguments.len() > 0:
@@ -212,7 +215,7 @@ proc print_help(version: string) =
       &"Arguments:{ansiResetCode}\n"
     for opt in arguments:
         echo &"  {opt.name}{rs[opt.required]}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
     
 # Parse the arguments
 # Accepts a version string

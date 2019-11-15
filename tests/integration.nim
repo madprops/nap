@@ -8,7 +8,7 @@ add_arg(name="a", kind="flag", help="Annotate a notation")
 add_arg(name="boo", kind="flag", help="Scare for life")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
 add_arg(name="foo", kind="value", required=true, help="Fork the fork")
-add_arg(name="path", kind="argument", required=true, help="Cross the bathroom")
+add_arg(name="path", kind="argument", required=true)
 add_arg(name="tree", kind="argument", required=false, help="For the health")
 
 # Process arguments
