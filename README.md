@@ -17,7 +17,9 @@ add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
 ```
 
 When ready then check arguments:
->parse_args("MyProgram (version 1.2.3)")
+```
+parse_args("MyProgram (version 1.2.3)")
+```
 
 Now it's ready to use:
 ```
