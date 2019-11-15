@@ -33,8 +33,9 @@ if bar.used:
 let path = arg("path")
 echo path.value
 
+# Rest of the arguments
 let tail = argtail()
-for argument in rest:
+for argument in tail:
     echo argument
 ```
 
