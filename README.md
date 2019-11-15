@@ -46,7 +46,7 @@ let path = arg("path")
 
 ### Automatic Properties
 
-These are properties that are handled internally. But will still be available to the user.
+These are properties that are handled internally, but will still be available to the user.
 
 `used (bool):` If the argument was used at all.
 
