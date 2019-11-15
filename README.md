@@ -78,13 +78,13 @@ These functions take 2 arguments, the first one is the name of the argument,
 the second is the default value to use if it fails. It returns a value (not the default)
 if a) the argument was used and b) the value can be parsed correctly.
 
-`argval_int:` Parse to int
+`argval_int:` Parse to int.
 
-`argval_float:` Parse to float
+`argval_float:` Parse to float.
 
-`argval_bool:` Parse to bool
+`argval_bool:` Parse to bool.
 
-`argval_string:` Return value unchanged
+`argval_string:` Return value unchanged.
 
 ## Help
 
