@@ -240,8 +240,7 @@ proc check_args() =
     for opt in opts:
       if opt.kind == "argument":
         if not opt.used and n > 0:
-          let ax = argstr2(opt)
-          echo &"'{ax[0]}' {ax[1]} is required."
+          echo &"'{opt.name}' argument is required."
           dec(n)
     exit = true
       
