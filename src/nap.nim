@@ -244,5 +244,6 @@ proc arg*(key:string): NapArg =
     if key == opt.name:
       return opt
 
+# Return the rest of  the arguments
 proc argtail*(): seq[string] =
   return tail
