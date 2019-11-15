@@ -74,9 +74,16 @@ These are properties that are handled internally, but will still be available to
 
 # Parsing
 
-These functions take 2 arguments, the first one is the name of the argument,
-the second is the default value to use if it fails. It returns a value (not the default)
-if a) the argument was used and b) the value can be parsed correctly.
+These functions take 2 arguments.
+
+The first one is the name of the argument.
+The second is the default value to use if it fails. 
+
+It returns a value (not the default) if:
+
+a) The argument was used
+b) The value is not empty
+c) The value can be parsed correctly
 
 `argval_int:` Parse to int.
 

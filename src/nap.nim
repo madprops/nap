@@ -284,12 +284,16 @@ proc args*(): seq[NapArg] =
 proc argtail*(): seq[string] =
   return tail
 
+# Used to check if argvals have a value
+proc argval_check(o:NapArg): bool =
+  return o.used and o.value != ""
+
 # Return argument's value if used
 # if not used then return default
 # if it fails to parse to int return default
 proc argval_int*(key:string, default:int): int =
   let o = arg(key)
-  if o.used:
+  if argval_check(o):
     try:
       return parseInt(o.value)
     except: discard
@@ -300,7 +304,7 @@ proc argval_int*(key:string, default:int): int =
 # if it fails to parse to float return default
 proc argval_float*(key:string, default:float): float =
   let o = arg(key)
-  if o.used:
+  if argval_check(o):
     try:
       return parseFloat(o.value)
     except: discard
@@ -311,7 +315,7 @@ proc argval_float*(key:string, default:float): float =
 # if it fails to parse to bool return default
 proc argval_bool*(key:string, default:bool): bool =
   let o = arg(key)
-  if o.used:
+  if argval_check(o):
     try:
       return parseBool(o.value)
     except: discard
@@ -321,4 +325,4 @@ proc argval_bool*(key:string, default:bool): bool =
 # if not used then return default
 proc argval_string*(key:string, default:string): string =
   let o = arg(key)
-  if o.used: o.value else: default
+  if argval_check(o): o.value else: default
