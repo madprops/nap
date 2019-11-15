@@ -148,12 +148,13 @@ proc check_args() =
 
 # Print the supplied user defined version
 proc print_version(version: string) =
-  echo &"{version}"
+  echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{version}{ansiResetCode}"
 
 # Print all the arguments and the help strings
 proc print_help(version: string) =
   echo ""
   print_version(version)
+  echo ""
 
   if opts.len() == 0:
     echo "\n(No arguments registered)\n"
@@ -182,31 +183,34 @@ proc print_help(version: string) =
   
   # Print flags
   if sflags.len() > 0 or lflags.len() > 0:
-    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Flags:{ansiResetCode}"
+    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
+      &"Flags:{ansiResetCode}\n"
     for opt in sflags:
-        echo &"\t-{opt.name}\t{opt.help}"
+        echo &"  -{opt.name}"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
     for opt in lflags:
-        echo &"\t--{opt.name}\t{opt.help}"
+        echo &"  --{opt.name}"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
-    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Values:{ansiResetCode}"
+    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
+      &"Values:{ansiResetCode}\n"
     for opt in svalues:
-        echo &"\t-{opt.name}\t{opt.help}"
+        echo &"  -{opt.name}"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
     for opt in lvalues:
-        echo &"\t--{opt.name}\t{opt.help}"
+        echo &"  --{opt.name}"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
   
   # Print arguments
   if arguments.len() > 0:
-    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Arguments:{ansiResetCode}"
+    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
+      &"Arguments:{ansiResetCode}\n"
     for opt in arguments:
-        echo &"\t{opt.name}\t{opt.help}"
+        echo &"  {opt.name}"
+        echo &"  {ansiForegroundColorCode(fgCyan)}{opt.help}{ansiResetCode}\n"
     
-    echo ""
-
 # Parse the arguments
 # Accepts a version string
 # and an optional list of params

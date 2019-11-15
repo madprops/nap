@@ -13,7 +13,7 @@ add_arg(name="tree", kind="argument", required=false, help="For the health")
 
 # Process arguments
 
-parse_args()
+parse_args("My Program (v1.24)")
 
 # Use the result
 
