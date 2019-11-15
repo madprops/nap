@@ -8,7 +8,7 @@ the user decide on how to use it.
 ## Example Usage
 
 Register arguments:
-```
+```nim
 add_arg(name="foo", kind="flag", required=true, help="Foo it")
 
 add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
@@ -17,12 +17,12 @@ add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
 ```
 
 When ready then check arguments:
-```
+```nim
 parse_args("MyProgram (version 1.2.3)")
 ```
 
 Now it's ready to use:
-```
+```nim
 let foo = arg("foo")
 echo foo.used
 
