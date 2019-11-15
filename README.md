@@ -77,12 +77,15 @@ These are properties that are handled internally, but will still be available to
 These functions take 2 arguments.
 
 The first one is the name of the argument.
+
 The second is the default value to use if it fails. 
 
 It returns a value (not the default) if:
 
 a) The argument was used
+
 b) The value is not empty
+
 c) The value can be parsed correctly
 
 `argval_int:` Parse to int.
@@ -93,9 +96,15 @@ c) The value can be parsed correctly
 
 `argval_string:` Return value unchanged.
 
-## Example
+## Examples
 
-`let n = argval_int("age", 30)`
+```nim
+# Either supplied age int or 30
+let n = argval_int("age", 30)
+
+# Either supplied country string or "Sealand"
+let c = argval_string("country", "Sealand")
+```
 
 ## Help
 
