@@ -31,7 +31,7 @@ if bar.used:
    echo bar.value
 
 let path = arg("path")
-   echo path.value
+echo path.value
 ```
 
 ## Properties
