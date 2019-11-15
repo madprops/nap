@@ -252,3 +252,42 @@ proc args*(): seq[NapArg] =
 # Return the rest of  the arguments
 proc argtail*(): seq[string] =
   return tail
+
+# Return argument's value if used
+# if not used then return default
+# if it fails to parse to int return default
+proc argval_int*(key:string, default:int): int =
+  let o = arg(key)
+  if o.used:
+    try:
+      return parseInt(o.value)
+    except: discard
+  return default
+
+# Return argument's value if used
+# if not used then return default
+# if it fails to parse to float return default
+proc argval_float*(key:string, default:float): float =
+  let o = arg(key)
+  if o.used:
+    try:
+      return parseFloat(o.value)
+    except: discard
+  return default
+
+# Return argument's value if used
+# if not used then return default
+# if it fails to parse to bool return default
+proc argval_bool*(key:string, default:bool): bool =
+  let o = arg(key)
+  if o.used:
+    try:
+      return parseBool(o.value)
+    except: discard
+  return default
+
+# Return argument's value if used
+# if not used then return default
+proc argval_string*(key:string, default:string): string =
+  let o = arg(key)
+  if o.used: o.value else: default

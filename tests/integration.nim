@@ -57,5 +57,12 @@ if tree.used:
 # the arguments
 echo "tail:"
 echo argtail()
+echo ""
+
+echo "argval tests:"
+echo argval_int("x", 22)
+echo argval_float("x", 324.3)
+echo argval_bool("x", false)
+echo argval_string("x", "rainforest")
 
 echo ""
