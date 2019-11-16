@@ -14,6 +14,9 @@ type NapArg* = ref object
   value*: string
   used*: bool
 
+method val*(this:NapArg): string =
+  return this.value
+
 # Used for argument checking
 var num_arguments = 0
 var num_required_arguments = 0
