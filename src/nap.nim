@@ -17,6 +17,8 @@ type NapArg* = ref object
 method val*(this:NapArg): string =
   return this.value
 
+var version = ""
+
 # Used for argument checking
 var num_arguments = 0
 var num_required_arguments = 0
@@ -124,13 +126,13 @@ proc argstr2(p: NapArg): (string, string) =
     return (p.name, "argument")
 
 # Print the supplied user defined version
-proc print_version(version: string) =
+proc print_version*() =
   echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{version}{ansiResetCode}"
 
 # Print all the arguments and the help strings
-proc print_help(version: string) =
+proc print_help*() =
   echo ""
-  print_version(version)
+  print_version()
   echo ""
 
   if opts.len() == 0:
@@ -272,14 +274,14 @@ proc check_args() =
 # Parse the arguments
 # Accepts a version string
 # and an optional list of params
-proc parse_args*(version="No version information.", 
+proc parse_args*(oversion="No version information.", 
   params:seq[TaintedString]=commandLineParams(), ) =
-
+  version = oversion
   if params.contains("--version"):
-    print_version(version)
+    print_version()
     quit(0)
   elif params.contains("--help"):
-    print_help(version)
+    print_help()
     quit(0)
 
   var p = initOptParser(params)

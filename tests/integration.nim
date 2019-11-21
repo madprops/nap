@@ -18,6 +18,8 @@ parse_args("My Program (v1.24)")
 # Use the result
 
 echo ""
+print_help()
+echo ""
 
 let a = arg("a")
 echo "a:"
@@ -61,5 +63,9 @@ echo argval_int("x", 22)
 echo argval_float("x", 324.3)
 echo argval_bool("x", false)
 echo argval_string("x", "rainforest")
+
+echo ""
+
+print_version()
 
 echo ""
