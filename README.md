@@ -15,6 +15,11 @@ add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
 
 add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
 
+# Examples are shown at the top of --help. 
+# Content is a string that can have multiple lines
+# If a line starts with # it is treated as a comment
+add_example(title="Cook the food", content="cook -mbv pizza\n#This makes the pizza\n#Very cool")
+
 let c = use_arg(name="catnip" kind="value" value="cosmic")
 ```
 
@@ -82,7 +87,8 @@ These are properties that are handled internally, but will still be available to
 
 `argtail:` Get the rest of the arguments.
 
-`add_example:` Add an example to show in the help.
+`add_example:` Add an example to show in the help. Receives title and content. Content can have multiple lines.
+If a line starts with # it is treated as a comment.
 
 `print_help:` Prints the help.
 
