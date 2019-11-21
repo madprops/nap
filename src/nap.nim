@@ -1,4 +1,5 @@
 import os
+import nre
 import parseopt
 import strutils
 import strformat
@@ -134,6 +135,26 @@ proc argstr2(p: NapArg): (string, string) =
   else:
     return (p.name, "argument")
 
+# Some util functions for printing
+
+proc print(s:string, kind:string): string =
+  case kind
+  of "title":
+    return &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s}:{ansiResetCode}\n"
+  of "content":
+    return &"  {ansiForegroundColorCode(fgCyan)}{s}{ansiResetCode}\n"
+  of "content2":
+    return &"   {ansiForegroundColorCode(fgCyan)}{s}{ansiResetCode}"
+  of "comment":
+    return &"   {ansiStyleCode(styleItalic)}{s}{ansiResetCode}"
+  else: return s
+
+proc rs(required: bool): string =
+  if required: " (Required)" else: ""
+
+proc hs(help: string): string =
+  if help != "": help else: "I don't know what this does"
+
 # Print the supplied user defined version
 proc print_version*() =
   echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{version}{ansiResetCode}"
@@ -145,12 +166,16 @@ proc print_help*() =
   echo ""
 
   if examples.len > 0:
-    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Examples:{ansiResetCode}\n"
+    echo print("Examples", "title")
     for ex in examples:
-      echo &"  {ex.title}"
+      echo &"  {ex.title}:"
       for line in ex.content.splitLines:
-        echo &"  {ansiForegroundColorCode(fgCyan)}{line}{ansiResetCode}"
+        if line.startsWith("#"):
+          let ln = line.replace(re"^#", "").strip()
+          echo print(ln, "comment")
+        else: 
+          let ln = line.strip()
+          echo print(ln, "content2")
       echo ""
 
   if opts.len() == 0:
@@ -177,42 +202,33 @@ proc print_help*() =
         lvalues.add(opt)
     of "argument":
       arguments.add(opt)
-
-  proc rs(required: bool): string =
-    if required: " (Required)" else: ""
-
-  proc hs(help: string): string =
-    if help != "": help else: "I don't know what this does"
   
   # Print flags
   if sflags.len() > 0 or lflags.len() > 0:
-    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Flags:{ansiResetCode}\n"
+    echo print("Flags", "title")
     for opt in sflags:
-        echo &"  -{opt.name}{rs(opt.required)}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
+      echo &"  -{opt.name}{rs(opt.required)}"
+      echo print(hs(opt.help), "content")
     for opt in lflags:
-        echo &"  --{opt.name}{rs(opt.required)}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
+      echo &"  --{opt.name}{rs(opt.required)}"
+      echo print(hs(opt.help), "content")
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
-    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Values:{ansiResetCode}\n"
+    echo print("Values", "title")
     for opt in svalues:
-        echo &"  -{opt.name}{rs(opt.required)}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
+      echo &"  -{opt.name}{rs(opt.required)}"
+      echo print(hs(opt.help), "content")
     for opt in lvalues:
-        echo &"  --{opt.name}{rs(opt.required)}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
+      echo &"  --{opt.name}{rs(opt.required)}"
+      echo print(hs(opt.help), "content")
   
   # Print arguments
   if arguments.len() > 0:
-    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
-      &"Arguments:{ansiResetCode}\n"
+    echo print("Arguments", "title")
     for opt in arguments:
-        echo &"  {opt.name}{rs(opt.required)}"
-        echo &"  {ansiForegroundColorCode(fgCyan)}{hs(opt.help)}{ansiResetCode}\n"
+      echo &"  {opt.name}{rs(opt.required)}"
+      echo print(hs(opt.help), "content")
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =

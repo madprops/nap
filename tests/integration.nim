@@ -13,8 +13,8 @@ let tree = use_arg(name="tree", kind="argument", help="For the health", value="p
 
 # Register examples
 
-add_example(title="Make a directory", content="mkdir somedir\nThis will create a dir")
-add_example(title="Remove a directory", content="rmdir somedir\nThis will remove a dir")
+add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
+add_example(title="Remove a directory", content="rmdir somedir\n#This will remove a dir\nrmdir -zx path\n#This eats burgers")
 add_example(title="Show an item", content="show item -xyz")
 
 # Process arguments
