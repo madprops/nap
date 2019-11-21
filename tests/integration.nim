@@ -11,13 +11,18 @@ let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork")
 add_arg(name="path", kind="argument", required=true)
 let tree = use_arg(name="tree", kind="argument", help="For the health", value="palmera")
 
+# Register examples
+
+add_example(title="Make a directory", content="mkdir somedir\nThis will create a dir")
+add_example(title="Remove a directory", content="rmdir somedir\nThis will remove a dir")
+add_example(title="Show an item", content="show item -xyz")
+
 # Process arguments
 
 parse_args("My Program (v1.24)")
 
 # Use the result
 
-echo ""
 print_help()
 echo ""
 

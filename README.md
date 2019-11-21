@@ -82,6 +82,12 @@ These are properties that are handled internally, but will still be available to
 
 `argtail:` Get the rest of the arguments.
 
+`add_example:` Add an example to show in the help.
+
+`print_help:` Prints the help.
+
+`print_version:` Prints the version.
+
 # Parsing
 
 These functions take 2 arguments.

@@ -17,7 +17,16 @@ type NapArg* = ref object
 method val*(this:NapArg): string =
   return this.value
 
+# Example object
+type Example = ref object
+  title: string
+  content: string
+
+# Holds the version
 var version = ""
+
+# Holds examples
+var examples: seq[Example]
 
 # Used for argument checking
 var num_arguments = 0
@@ -134,6 +143,15 @@ proc print_help*() =
   echo ""
   print_version()
   echo ""
+
+  if examples.len > 0:
+    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}",
+      &"Examples:{ansiResetCode}\n"
+    for ex in examples:
+      echo &"  {ex.title}"
+      for line in ex.content.splitLines:
+        echo &"  {ansiForegroundColorCode(fgCyan)}{line}{ansiResetCode}"
+      echo ""
 
   if opts.len() == 0:
     echo "\n(No arguments registered)\n"
@@ -341,3 +359,7 @@ proc argval_bool*(key:string, default:bool): bool =
 proc argval_string*(key:string, default:string): string =
   let o = arg(key)
   if argval_check(o): o.value else: default
+
+# Adds an example
+proc add_example*(title:string, content:string) =
+  examples.add(Example(title:title, content:content))
