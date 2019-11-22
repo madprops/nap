@@ -10,9 +10,7 @@ the user decide on how to use it.
 Register arguments:
 ```nim
 add_arg(name="foo", kind="flag", help="Foo it")
-
 add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
-
 add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
 
 # Same as add_arg but receives a reference
