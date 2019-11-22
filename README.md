@@ -141,10 +141,8 @@ let c = argval_string("country", "Sealand")
 
 ## Help
 
-Using --help will show a summary of all available arguments. As well as print the version at the top.
+Using --help will show a summary of all available arguments, headers, examples, and notes.
 
 ## Version
 
-Using --version will show a string that is left to the user to define completely. This is defined when
-using `parse_args`, for instance `parse_args("My Program (version 1.2.3)"). If no version is provided
-then it will use a default "No version information." string. So it's advised to always fill this.
+Using --version will show all the headers.
