@@ -15,17 +15,26 @@ add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
 
 add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
 
+# Same as add_arg but receives a reference
+let c = use_arg(name="catnip" kind="value" value="cosmic")
+
 # Examples are shown at the top of --help. 
 # Content is a string that can have multiple lines
 # If a line starts with # it is treated as a comment
 add_example(title="Cook the food", content="cook -mbv pizza\n#This makes the pizza\n#Very cool")
 
-let c = use_arg(name="catnip" kind="value" value="cosmic")
+# Information at the top
+add_header("MyProgram")
+add_header("Version 1.2.3")
+
+# Notes at the bottom
+add_note("Licensed under the FreeBeer public license")
+add_note("Made with industrial boots")
 ```
 
-When ready then check arguments:
+When ready start the argument parser.
 ```nim
-parse_args("MyProgram (version 1.2.3)")
+parse_args()
 ```
 
 Now it's ready to use:
@@ -79,13 +88,17 @@ These are properties that are handled internally, but will still be available to
 
 `use_arg:` Same as add_arg but it returns the argument object.
 
-`parse_args:` Do the processing. Optional version/info string and parameters list.
+`parse_args:` Do the processing. Optional parameters list can be sent, else it uses the default one.
 
 `arg:` Get an argument object.
 
 `args:` Get all argument objects.
 
 `argtail:` Get the rest of the arguments.
+
+`add_header:` Include a line that will appear at the top.
+
+`add_note:` Include a line that will appear in the notes at the bottom.
 
 `add_example:` Add an example to show in the help. Receives title and content. Content can have multiple lines.
 If a line starts with # it is treated as a comment.

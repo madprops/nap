@@ -2,8 +2,7 @@
 
 import nap
 
-# Register arguments
-
+# Add arguments
 add_arg(name="a", kind="flag", help="Annotate a notation")
 let boo = use_arg(name="boo", kind="flag", help="Scare for life")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
@@ -11,15 +10,21 @@ let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork")
 add_arg(name="path", kind="argument", required=true)
 let tree = use_arg(name="tree", kind="argument", help="For the health", value="palmera")
 
-# Register examples
-
+# Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
 add_example(title="Remove a directory", content="rmdir somedir\n#This will remove a dir\nrmdir -zx path\n#This eats burgers")
 add_example(title="Show an item", content="show item -xyz")
 
-# Process arguments
+# Add headers
+add_header("MyProgram")
+add_header("Version 1.3.5")
 
-parse_args("My Program (v1.24)", "This is cool software\nMade with industrial boots")
+# Add Notes
+add_note("Licensed under the FreeBeer public license")
+add_note("Made with industrial boots by squirrels")
+
+# Process arguments
+parse_args()
 
 # Use the result
 
@@ -71,6 +76,6 @@ echo argval_string("x", "rainforest")
 
 echo ""
 
-print_version()
+print_header()
 
 echo ""

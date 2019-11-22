@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.9.1"
+version       = "1.0.0"
 author        = "madprops"
 description   = "Argument parser"
 license       = "MIT"

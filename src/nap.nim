@@ -23,14 +23,14 @@ type Example = ref object
   title: string
   content: string
 
-# Holds the version
-var xversion = ""
+# Holds the headers
+var xheaders: seq[string]
 
-# Holds the nots
-var xnotes = ""
+# Holds the notes
+var xnotes: seq[string]
 
 # Holds examples
-var examples: seq[Example]
+var xexamples: seq[Example]
 
 # Used for argument checking
 var num_arguments = 0
@@ -142,12 +142,13 @@ proc argstr2(p: NapArg): (string, string) =
 
 proc print(s:string, kind:string) =
   case kind
+  of "header":
+    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{s.strip()}{ansiResetCode}"
   of "title":
-    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s}:{ansiResetCode}\n"
+    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s.strip()}:{ansiResetCode}\n"
   of "content":
     for line in s.splitLines:
       echo &"  {ansiForegroundColorCode(fgCyan)}{line.strip()}{ansiResetCode}"
-    echo ""
   of "content2":
     echo &"   {ansiForegroundColorCode(fgCyan)}{s.strip()}{ansiResetCode}"
   of "comment":
@@ -162,26 +163,30 @@ proc hs(help: string): string =
   if help != "": help else: "I don't know what this does"
 
 # Print the supplied user defined version
-proc print_version*() =
-  echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{xversion}{ansiResetCode}"
+proc print_header*() =
+  for header in xheaders:
+    print(header, "header")
 
 # Print all the arguments and the help strings
 proc print_help*() =
   echo ""
-  print_version()
-  echo ""
+  print_header()
 
   # Print examples
-  if examples.len > 0:
+  if xexamples.len > 0:
     print("Examples", "title")
-    for ex in examples:
-      echo &"  {ex.title}:"
+    var i = 0
+    for ex in xexamples:
+      if i > 0:
+        echo &"\n  {ex.title}:"
+      else: 
+        echo &"  {ex.title}:"
+      inc(i)
       for line in ex.content.splitLines:
         if line.startsWith("#"):
           print(line, "comment")
         else: 
           print(line, "content2")
-      echo ""
 
   if opts.len() == 0:
     echo "\n(No arguments registered)\n"
@@ -235,9 +240,10 @@ proc print_help*() =
       echo &"  {opt.name}{rs(opt.required)}"
       print(hs(opt.help), "content")
   
-  if xnotes != "":
+  if xnotes.len > 0:
     print("Notes", "title")
-    print(xnotes, "content")
+    for note in xnotes:
+      print(note, "content")
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
@@ -317,12 +323,9 @@ proc check_args() =
 # Parse the arguments
 # Accepts a version string
 # and an optional list of params
-proc parse_args*(version="No version information.", notes="",
-  params:seq[TaintedString]=commandLineParams(), ) =
-  xversion = version
-  xnotes = notes
+proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
   if params.contains("--version"):
-    print_version()
+    print_header()
     quit(0)
   elif params.contains("--help"):
     print_help()
@@ -386,6 +389,14 @@ proc argval_string*(key:string, default:string): string =
   let o = arg(key)
   if argval_check(o): o.value else: default
 
+# Adds a header
+proc add_header*(header:string) =
+  xheaders.add(header)
+
+# Adds a note
+proc add_note*(note:string) =
+  xnotes.add(note)
+
 # Adds an example
 proc add_example*(title:string, content:string) =
-  examples.add(Example(title:title, content:content))
+  xexamples.add(Example(title:title, content:content))
