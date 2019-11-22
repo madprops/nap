@@ -162,12 +162,12 @@ proc rs(required: bool): string =
 proc hs(help: string): string =
   if help != "": help else: "I don't know what this does"
 
-# Print the supplied user defined version
+# Prints header items
 proc print_header*() =
   for header in xheaders:
     print(header, "header")
 
-# Print all the arguments and the help strings
+# Prints all available information
 proc print_help*() =
   echo ""
   print_header()
@@ -321,7 +321,6 @@ proc check_args() =
   if exit: quit(0)
     
 # Parse the arguments
-# Accepts a version string
 # and an optional list of params
 proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
   if params.contains("--version"):
