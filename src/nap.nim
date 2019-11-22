@@ -24,7 +24,10 @@ type Example = ref object
   content: string
 
 # Holds the version
-var version = ""
+var xversion = ""
+
+# Holds the nots
+var xnotes = ""
 
 # Holds examples
 var examples: seq[Example]
@@ -137,17 +140,20 @@ proc argstr2(p: NapArg): (string, string) =
 
 # Some util functions for printing
 
-proc print(s:string, kind:string): string =
+proc print(s:string, kind:string) =
   case kind
   of "title":
-    return &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s}:{ansiResetCode}\n"
+    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s}:{ansiResetCode}\n"
   of "content":
-    return &"  {ansiForegroundColorCode(fgCyan)}{s}{ansiResetCode}\n"
+    for line in s.splitLines:
+      echo &"  {ansiForegroundColorCode(fgCyan)}{line.strip()}{ansiResetCode}"
+    echo ""
   of "content2":
-    return &"   {ansiForegroundColorCode(fgCyan)}{s}{ansiResetCode}"
+    echo &"   {ansiForegroundColorCode(fgCyan)}{s.strip()}{ansiResetCode}"
   of "comment":
-    return &"   {ansiStyleCode(styleItalic)}{s}{ansiResetCode}"
-  else: return s
+    let s2 = s.replace(re"^#", "").strip()
+    echo &"   {ansiStyleCode(styleItalic)}{s2}{ansiResetCode}"
+  else: echo s
 
 proc rs(required: bool): string =
   if required: " (Required)" else: ""
@@ -157,7 +163,7 @@ proc hs(help: string): string =
 
 # Print the supplied user defined version
 proc print_version*() =
-  echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{version}{ansiResetCode}"
+  echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{xversion}{ansiResetCode}"
 
 # Print all the arguments and the help strings
 proc print_help*() =
@@ -165,17 +171,16 @@ proc print_help*() =
   print_version()
   echo ""
 
+  # Print examples
   if examples.len > 0:
-    echo print("Examples", "title")
+    print("Examples", "title")
     for ex in examples:
       echo &"  {ex.title}:"
       for line in ex.content.splitLines:
         if line.startsWith("#"):
-          let ln = line.replace(re"^#", "").strip()
-          echo print(ln, "comment")
+          print(line, "comment")
         else: 
-          let ln = line.strip()
-          echo print(ln, "content2")
+          print(line, "content2")
       echo ""
 
   if opts.len() == 0:
@@ -205,30 +210,34 @@ proc print_help*() =
   
   # Print flags
   if sflags.len() > 0 or lflags.len() > 0:
-    echo print("Flags", "title")
+    print("Flags", "title")
     for opt in sflags:
       echo &"  -{opt.name}{rs(opt.required)}"
-      echo print(hs(opt.help), "content")
+      print(hs(opt.help), "content")
     for opt in lflags:
       echo &"  --{opt.name}{rs(opt.required)}"
-      echo print(hs(opt.help), "content")
+      print(hs(opt.help), "content")
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
-    echo print("Values", "title")
+    print("Values", "title")
     for opt in svalues:
       echo &"  -{opt.name}{rs(opt.required)}"
-      echo print(hs(opt.help), "content")
+      print(hs(opt.help), "content")
     for opt in lvalues:
       echo &"  --{opt.name}{rs(opt.required)}"
-      echo print(hs(opt.help), "content")
+      print(hs(opt.help), "content")
   
   # Print arguments
   if arguments.len() > 0:
-    echo print("Arguments", "title")
+    print("Arguments", "title")
     for opt in arguments:
       echo &"  {opt.name}{rs(opt.required)}"
-      echo print(hs(opt.help), "content")
+      print(hs(opt.help), "content")
+  
+  if xnotes != "":
+    print("Notes", "title")
+    print(xnotes, "content")
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
@@ -308,9 +317,10 @@ proc check_args() =
 # Parse the arguments
 # Accepts a version string
 # and an optional list of params
-proc parse_args*(oversion="No version information.", 
+proc parse_args*(version="No version information.", notes="",
   params:seq[TaintedString]=commandLineParams(), ) =
-  version = oversion
+  xversion = version
+  xnotes = notes
   if params.contains("--version"):
     print_version()
     quit(0)

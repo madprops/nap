@@ -19,7 +19,7 @@ add_example(title="Show an item", content="show item -xyz")
 
 # Process arguments
 
-parse_args("My Program (v1.24)")
+parse_args("My Program (v1.24)", "This is cool software\nMade with industrial boots")
 
 # Use the result
 
