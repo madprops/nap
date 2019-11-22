@@ -244,6 +244,8 @@ proc print_help*() =
     print("Notes", "title")
     for note in xnotes:
       print(note, "content")
+  
+  echo ""
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
