@@ -10,8 +10,11 @@ the user decide on how to use it.
 Register arguments:
 ```nim
 add_arg(name="foo", kind="flag", help="Foo it")
-add_arg(name="bar", kind="value", required=false, help="Heaps Alloy")
 add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
+
+# Adding a `-b` alt to the `--bar` value flag
+# This will work with `--bar=x` and `-b=x`
+add_arg(name="bar", kind="value", required=false, help="Heaps Alloy", alt="b")
 
 # Same as add_arg but receives a reference
 let c = use_arg(name="catnip" kind="value" value="cosmic")
@@ -70,6 +73,8 @@ echo c.value
 
 `value (string):` A default value that is set initially on the object. Defaults to an empty string.
 
+`alt (string):` This is used to make alts in flag and values. For instance -a and --acorn.
+
 ### Automatic Properties
 
 These are properties that are handled internally, but will still be available to the user.
@@ -79,6 +84,8 @@ These are properties that are handled internally, but will still be available to
 `value (string):` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string. You can use `val` as a shortcut.
 
 `ikind (string):` This is used internally to differentiate between different kinds of flag and value kinds.
+
+`aikind (string):` This is used internally to differentiate between different kinds of flag and value kinds in alts.
 
 ## Methods
 
