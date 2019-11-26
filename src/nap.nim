@@ -14,6 +14,8 @@ type NapArg* = ref object
   help*: string
   value*: string
   used*: bool
+  alt*: string
+  aikind*: string
 
 method val*(this:NapArg): string =
   return this.value
@@ -61,27 +63,33 @@ proc arg*(key:string): NapArg =
 proc args*(): seq[NapArg] =
   return opts
 
+proc argalt*(alt_name:string): NapArg =
+  for opt in opts:
+    if alt_name == opt.alt:
+      return opt
+  return NapArg(name:"--undefined--") 
+
 # Register an argument to be considered
-proc add_arg*(name="", kind="", required=false, help="", value="") =
+proc add_arg*(name="", kind="", required=false, help="", value="", alt="") =
   var name = name.strip()
   var kind = kind.strip()
   var help = help.strip()
 
   if arg(name).name != "--undefined--":
-    bye(&"{name} argument can't be registered twice.")
+    bye(&"'{name}' can't be registered twice.")
 
   if name == "":
-    bye("Argument's name can't be empty.")
+    bye("Names can't be empty.")
     
   if kind == "":
-    bye("Argument's kind can't be empty.")
+    bye("Kind can't be empty.")
 
   if name.contains(" "):
-    bye(&"'{name}' argument name can't have spaces.")
+    bye(&"'{name}' name can't have spaces.")
 
   if not kinds.contains(kind):
-    bye(&"{kind} is not a valid argument type.")
-
+    bye(&"'{kind}' is not a valid kind.")
+  
   # Get the internal kind 
   # s=short l=long
   var ikind: string
@@ -100,12 +108,45 @@ proc add_arg*(name="", kind="", required=false, help="", value="") =
       if required:
         inc(num_required_arguments)
   
+  var aikind = ""
+
+  if alt != "":
+
+    if kind != "flag" and kind != "value":
+      bye("Alts can only be set on flags and values.")
+    
+    if argalt(alt).name != "--undefined--" or
+      arg(alt).name != "--undefined--":
+        bye(&"'{alt}' alt is already being used.")
+
+    if alt.contains(" "):
+      bye(&"Alt '{name}' name can't have spaces.")
+    
+    if ikind == "lflag" and alt.len != 1:
+      bye("Long flags can only have short flag alts.")
+      
+    if ikind == "sflag" and alt.len == 1:
+      bye("Short flags can only have long flag alts.")
+      
+    if ikind == "lvalue" and alt.len != 1:
+      bye("Long values can only have short value alts.")
+      
+    if ikind == "svalue" and alt.len != 1:
+      bye("Short values can only have long value alts.")
+      
+    aikind = case ikind
+    of "sflag": "lflag"
+    of "lflag": "sflag"
+    of "svalue": "lvalue"
+    of "lvalue": "svalue"
+    else: ""
+  
   opts.add(NapArg(name:name, kind:kind, ikind:ikind, 
-    required:required, help:help, value:value, used:false))
+    required:required, help:help, value:value, used:false, alt:alt, aikind:aikind))
 
 # Same as add_arg but returns a reference to the argument object
-proc use_arg*(name="", kind="", required=false, help="", value=""): NapArg =
-  add_arg(name, kind, required, help, value)
+proc use_arg*(name="", kind="", required=false, help="", value="", alt=""): NapArg =
+  add_arg(name, kind, required, help, value, alt)
   arg(name.strip())
 
 # Util to change kinds to strings
@@ -158,6 +199,13 @@ proc print(s:string, kind:string) =
 
 proc rs(required: bool): string =
   if required: " (Required)" else: ""
+  
+proc xalt(alt:string): string =
+  if alt != "":
+    let dash = if alt.len > 1: "--" else: "-"
+    return &" (or {dash}{alt})" 
+  else: 
+    return ""
 
 proc hs(help: string): string =
   if help != "": help else: "I don't know what this does"
@@ -217,20 +265,20 @@ proc print_help*() =
   if sflags.len() > 0 or lflags.len() > 0:
     print("Flags", "title")
     for opt in sflags:
-      echo &"  -{opt.name}{rs(opt.required)}"
+      echo &"  -{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
       print(hs(opt.help), "content")
     for opt in lflags:
-      echo &"  --{opt.name}{rs(opt.required)}"
+      echo &"  --{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
       print(hs(opt.help), "content")
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
     print("Values", "title")
     for opt in svalues:
-      echo &"  -{opt.name}{rs(opt.required)}"
+      echo &"  -{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
       print(hs(opt.help), "content")
     for opt in lvalues:
-      echo &"  --{opt.name}{rs(opt.required)}"
+      echo &"  --{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
       print(hs(opt.help), "content")
   
   # Print arguments
@@ -256,17 +304,21 @@ proc update_arg(p: OptParser) =
 
   for opt in opts.mitems:
     if not opt.used and (opt.kind == "argument" or
-      p.key == opt.name):
+      p.key == opt.name or p.key == opt.alt):
 
       # Do some checks
 
+      let kind = if p.key == opt.name: opt.ikind
+        elif p.key == opt.alt: opt.aikind
+        else: ""
+
       if p.kind == cmdShortOption:
-        if opt.ikind != "sflag" and
-          opt.ikind != "svalue":
+        if kind != "sflag" and
+          kind != "svalue":
             continue
       elif p.kind == cmdLongOption:
-        if opt.ikind != "lflag" and
-          opt.ikind != "lvalue":
+        if kind != "lflag" and
+          kind != "lvalue":
             continue
       elif p.kind == cmdArgument:
         if opt.kind != "argument":

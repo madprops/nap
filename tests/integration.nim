@@ -3,10 +3,10 @@
 import nap
 
 # Add arguments
-add_arg(name="a", kind="flag", help="Annotate a notation")
+add_arg(name="a", kind="flag", help="Annotate a notation", alt="acorn")
 let boo = use_arg(name="boo", kind="flag", help="Scare for life")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
-let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork")
+let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork", alt="f")
 add_arg(name="path", kind="argument", required=true)
 let tree = use_arg(name="tree", kind="argument", help="For the health", value="palmera")
 
