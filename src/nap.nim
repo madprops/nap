@@ -267,7 +267,7 @@ proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
     if p.key == lname:
       return (true, lkind)
     
-    let valid = lname.contains(p.key)
+    let valid = lname.startsWith(p.key)
     if not valid: return (false, "")
     
     for o in opts:
@@ -276,8 +276,8 @@ proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
       
       if o.used: continue
 
-      if((o.ikind == "lflag" or o.ikind == "lvalue") and (o.name.contains(p.key))) or
-      ((o.aikind == "lflag" or o.aikind == "lvalue") and (o.alt.contains(p.key))):
+      if((o.ikind == "lflag" or o.ikind == "lvalue") and (o.name.startsWith(p.key))) or
+      ((o.aikind == "lflag" or o.aikind == "lvalue") and (o.alt.startsWith(p.key))):
         if opt.required and not o.required:
           continue
         else: return (false, "")
