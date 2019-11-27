@@ -7,7 +7,8 @@ add_arg(name="a", kind="flag", help="Annotate a notation", alt="acorn")
 let boo = use_arg(name="boo", kind="flag", help="Scare for life")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
 let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork", alt="f")
-let foobar = use_arg(name="foobar", kind="value", help="Fork the forkz", alt="b")
+let zoobar = use_arg(name="zoobar", kind="value", help="Fork the forkz", alt="b")
+let zoob = use_arg(name="zoob", kind="value", help="Fork the forkerz", alt="t")
 add_arg(name="path", kind="argument", required=true)
 let tree = use_arg(name="tree", kind="argument", help="For the health", value="palmera")
 
@@ -46,9 +47,14 @@ if foo.used:
   echo foo.value
   echo ""
 
-if foobar.used:
-  echo "foobar:"
-  echo foobar.value
+if zoobar.used:
+  echo "zoobar:"
+  echo zoobar.value
+  echo ""
+
+if zoob.used:
+  echo "zoob:"
+  echo zoob.value
   echo ""
 
 let x = arg("x")

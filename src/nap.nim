@@ -1,3 +1,4 @@
+import utils
 import os
 import nre
 import parseopt
@@ -165,7 +166,7 @@ proc argstr(p: OptParser): (string, string) =
     return (p.key, "argument")
         
 # Util to change kinds to strings
-proc argstr2(p: NapArg): (string, string) =
+proc argstr_2(p: NapArg): (string, string) =
   if p.kind == "flag":
     if p.ikind == "sflag":
       return (&"-{p.name}", "flag")
@@ -295,6 +296,22 @@ proc print_help*() =
   
   echo ""
 
+# Try to find a close enough arg
+proc closest_arg(p:OptParser): (string, string) =
+  var highest: NapArg
+  var highest_n = 0.0
+
+  for opt in opts:
+    let n = string_similarity(p.key, opt.name)
+    if n > highest_n:
+      highest = opt
+      highest_n = n
+  
+  if highest_n >= 0.7:
+    return argstr_2(highest)
+  
+  return ("", "")
+
 # Check if prefix is partially matched
 # And there are no conflicts
 # This is for flags and values
@@ -381,7 +398,11 @@ proc update_arg(p: OptParser) =
     
   # If no match then exit
   let ax = argstr(p)
-  bye(&"'{ax[0]}' is not a valid {ax[1]}.")
+  let closest = closest_arg(p)
+  var cstmsg = ""
+  if closest[0] != "":
+    cstmsg = &" Maybe you meant {closest[0]} {closest[1]} ?"
+  bye(&"'{ax[0]}' is not a valid {ax[1]}.{cstmsg}")
 
 # Check for missing or
 # unecessary values or
@@ -398,13 +419,13 @@ proc check_args() =
     if opt.kind == "value":
         if (opt.used and opt.value == "") or
           (opt.required and not opt.used):
-            echo &"'{argstr2(opt)[0]}' needs a value."
+            echo &"'{argstr_2(opt)[0]}' needs a value."
             exit = true
     
     # Check for unecessary values
     elif opt.kind == "flag":
       if opt.value != "":
-        echo &"'{argstr2(opt)[0]}' does not accept a value."
+        echo &"'{argstr_2(opt)[0]}' does not accept a value."
         exit = true
   
   if num_required_arguments > nargs:
