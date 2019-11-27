@@ -295,6 +295,52 @@ proc print_help*() =
   
   echo ""
 
+# Check if prefix is partially matched
+# And there are no conflicts
+# This is for flags and values
+proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
+  var lname = ""
+  var sname = ""
+  var lkind = ""
+  var skind = ""
+
+  if opt.ikind == "lflag" or
+  opt.ikind == "lvalue":
+    lname = opt.name
+    lkind = opt.ikind
+    sname = opt.alt
+    skind = opt.aikind
+  elif opt.alt != "":
+    lname = opt.alt
+    lkind = opt.aikind
+    sname = opt.name
+    skind = opt.ikind
+  
+  if p.kind == cmdShortOption:
+    if p.key == sname:
+      return (true, skind)
+  
+  else:
+    if p.key == lname:
+      return (true, lkind)
+    
+    let valid = lname.contains(p.key)
+    if not valid: return (false, "")
+    
+    for o in opts:
+      if o.name == opt.name:
+        continue
+      
+      if o.used: continue
+
+      if((o.ikind == "lflag" or o.ikind == "lvalue") and (o.name.contains(p.key))) or
+      ((o.aikind == "lflag" or o.aikind == "lvalue") and (o.alt.contains(p.key))):
+        if opt.required and not o.required:
+          continue
+        else: return (false, "")
+    
+    return (true, lkind)
+
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
   if p.kind == cmdArgument:
@@ -303,14 +349,12 @@ proc update_arg(p: OptParser) =
       return
 
   for opt in opts.mitems:
-    if not opt.used and (opt.kind == "argument" or
-      p.key == opt.name or p.key == opt.alt):
+    let pm = prefix_match(p, opt)
+    if not opt.used and (opt.kind == "argument" or pm[0]):
 
       # Do some checks
 
-      let kind = if p.key == opt.name: opt.ikind
-        elif p.key == opt.alt: opt.aikind
-        else: ""
+      let kind = pm[1]
 
       if p.kind == cmdShortOption:
         if kind != "sflag" and
