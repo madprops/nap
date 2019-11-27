@@ -1,22 +1,9 @@
+import types
 import utils
 import os
-import nre
 import parseopt
 import strutils
 import strformat
-import terminal
-
-# Argument object
-type NapArg* = ref object
-  name*: string
-  kind*: string
-  ikind*: string
-  required*: bool
-  help*: string
-  value*: string
-  used*: bool
-  alt*: string
-  aikind*: string
 
 method val*(this:NapArg): string =
   return this.value
@@ -149,67 +136,6 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="") =
 proc use_arg*(name="", kind="", required=false, help="", value="", alt=""): NapArg =
   add_arg(name, kind, required, help, value, alt)
   arg(name.strip())
-
-# Util to change kinds to strings
-proc argstr(p: OptParser): (string, string) =
-  if p.kind == cmdShortOption:
-    if p.val == "":
-      return (&"-{p.key}", "flag")
-    else:
-      return (&"-{p.key}", "value flag")
-  elif p.kind == cmdLongOption:
-    if p.val == "":
-      return (&"--{p.key}", "flag")
-    else:
-      return (&"--{p.key}", "value flag")
-  else:
-    return (p.key, "argument")
-        
-# Util to change kinds to strings
-proc argstr_2(p: NapArg): (string, string) =
-  if p.kind == "flag":
-    if p.ikind == "sflag":
-      return (&"-{p.name}", "flag")
-    elif p.ikind == "lflag":
-      return (&"--{p.name}", "flag")
-  elif p.kind == "value":
-    if p.ikind == "svalue":
-      return (&"-{p.name}", "value flag")
-    elif p.ikind == "lvalue":
-      return (&"--{p.name}", "value flag")
-  else:
-    return (p.name, "argument")
-
-# Some util functions for printing
-
-proc print(s:string, kind:string) =
-  case kind
-  of "header":
-    echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{s.strip()}{ansiResetCode}"
-  of "title":
-    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s.strip()}:{ansiResetCode}\n"
-  of "content":
-    for line in s.splitLines:
-      echo &"  {ansiForegroundColorCode(fgCyan)}{line.strip()}{ansiResetCode}"
-  of "content2":
-    echo &"   {ansiForegroundColorCode(fgCyan)}{s.strip()}{ansiResetCode}"
-  of "comment":
-    let s2 = s.replace(re"^#", "").strip()
-    echo &"   {ansiStyleCode(styleItalic)}{s2}{ansiResetCode}"
-  else: echo s
-
-proc rs(required: bool): string =
-  if required: " (Required)" else: ""
-  
-proc xalt(alt:string): string =
-  if alt != "":
-    let dash = if alt.len > 1: "--" else: "-"
-    return &" (or {dash}{alt})" 
-  else: 
-    return ""
-
-proc hs(help: string): string =
-  if help != "": help else: "I don't know what this does"
 
 # Prints header items
 proc print_header*() =
