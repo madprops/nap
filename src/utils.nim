@@ -27,7 +27,7 @@ proc print*(s:string, kind:string) =
   of "header":
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{s.strip()}{ansiResetCode}"
   of "title":
-    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s.strip()}:{ansiResetCode}\n"
+    echo &"\n{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgBlue)}{s.strip()}:{ansiResetCode}"
   of "content":
     for line in s.splitLines:
       echo &"  {ansiForegroundColorCode(fgCyan)}{line.strip()}{ansiResetCode}"
@@ -39,7 +39,7 @@ proc print*(s:string, kind:string) =
   else: echo s
 
 # Conditional required message in help
-proc rs*(required: bool): string =
+proc xrequired*(required: bool): string =
   if required: " (Required)" else: ""
 
 # Conditional alt message in help
@@ -51,7 +51,7 @@ proc xalt*(alt:string): string =
     return ""
 
 # Conditional help message
-proc hs*(help: string): string =
+proc xhelp*(help: string): string =
   if help != "": help else: "I don't know what this does"
 
 # Util to change kinds to strings

@@ -152,10 +152,7 @@ proc print_help*() =
     print("Examples", "title")
     var i = 0
     for ex in xexamples:
-      if i > 0:
-        echo &"\n  {ex.title}:"
-      else: 
-        echo &"  {ex.title}:"
+      echo &"\n  {ex.title}:"
       inc(i)
       for line in ex.content.splitLines:
         if line.startsWith("#"):
@@ -192,32 +189,33 @@ proc print_help*() =
   if sflags.len() > 0 or lflags.len() > 0:
     print("Flags", "title")
     for opt in sflags:
-      echo &"  -{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
-      print(hs(opt.help), "content")
+      echo &"\n  -{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
+      print(xhelp(opt.help), "content")
     for opt in lflags:
-      echo &"  --{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
-      print(hs(opt.help), "content")
+      echo &"\n  --{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
+      print(xhelp(opt.help), "content")
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
     print("Values", "title")
     for opt in svalues:
-      echo &"  -{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
-      print(hs(opt.help), "content")
+      echo &"\n  -{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
+      print(xhelp(opt.help), "content")
     for opt in lvalues:
-      echo &"  --{opt.name}{xalt(opt.alt)}{rs(opt.required)}"
-      print(hs(opt.help), "content")
+      echo &"\n  --{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
+      print(xhelp(opt.help), "content")
   
   # Print arguments
   if arguments.len() > 0:
     print("Arguments", "title")
     for opt in arguments:
-      echo &"  {opt.name}{rs(opt.required)}"
-      print(hs(opt.help), "content")
+      echo &"\n  {opt.name}{xrequired(opt.required)}"
+      print(xhelp(opt.help), "content")
   
   if xnotes.len > 0:
     print("Notes", "title")
     for note in xnotes:
+      echo ""
       print(note, "content")
   
   echo ""

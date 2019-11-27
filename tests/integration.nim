@@ -8,9 +8,9 @@ let boo = use_arg(name="boo", kind="flag", help="Scare for life")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
 let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork", alt="f")
 let zoobar = use_arg(name="zoobar", kind="value", help="Fork the forkz", alt="b")
-let zoob = use_arg(name="zoob", kind="value", help="Fork the forkerz", alt="t")
-add_arg(name="path", kind="argument", required=true)
-let tree = use_arg(name="tree", kind="argument", help="For the health", value="palmera")
+let zoob = use_arg(name="zoob", kind="value", help="Fork the forkerz", alt="B")
+add_arg(name="path", kind="argument", help="Path to rain", required=true)
+let tree = use_arg(name="tree", kind="argument", value="palmera")
 
 # Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
