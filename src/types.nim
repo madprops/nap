@@ -9,3 +9,10 @@ type NapArg* = ref object
   used*: bool
   alt*: string
   aikind*: string
+  multiple*: bool
+  values*: seq[string]
+
+# Example object
+type Example* = ref object
+  title*: string
+  content*: string

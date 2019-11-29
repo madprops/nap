@@ -8,11 +8,6 @@ import strformat
 method val*(this:NapArg): string =
   return this.value
 
-# Example object
-type Example = ref object
-  title: string
-  content: string
-
 # Holds the headers
 var xheaders: seq[string]
 
@@ -58,84 +53,93 @@ proc argalt*(alt_name:string): NapArg =
   return NapArg(name:"--undefined--") 
 
 # Register an argument to be considered
-proc add_arg*(name="", kind="", required=false, help="", value="", alt="") =
-  var name = name.strip()
-  var kind = kind.strip()
-  var help = help.strip()
+proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
+  multiple=false, values:openarray[string]=[]) =
+    var name = name.strip()
+    var kind = kind.strip()
+    var help = help.strip()
 
-  if arg(name).name != "--undefined--":
-    bye(&"'{name}' can't be registered twice.")
+    if arg(name).name != "--undefined--":
+      bye(&"'{name}' can't be registered twice.")
 
-  if name == "":
-    bye("Names can't be empty.")
+    if name == "":
+      bye("Names can't be empty.")
+      
+    if kind == "":
+      bye("Kind can't be empty.")
+
+    if name.contains(" "):
+      bye(&"'{name}' name can't have spaces.")
+
+    if not kinds.contains(kind):
+      bye(&"'{kind}' is not a valid kind.")
+      
+    if multiple and kind != "value":    
+        bye(&"Only values can have be set as multiple.")
     
-  if kind == "":
-    bye("Kind can't be empty.")
+    # Get the internal kind 
+    # s=short l=long
+    var ikind: string
+      
+    if kind == "flag":
+      ikind = if name.len() == 1: "sflag"
+        else: "lflag"
+      
+    elif kind == "value":
+      ikind = if name.len() == 1: "svalue"
+        else: "lvalue"
 
-  if name.contains(" "):
-    bye(&"'{name}' name can't have spaces.")
+    elif kind == "argument":
+        ikind = "argument"
+        inc(num_arguments)
+        if required:
+          inc(num_required_arguments)
+    
+    var aikind = ""
 
-  if not kinds.contains(kind):
-    bye(&"'{kind}' is not a valid kind.")
+    if alt != "":
+
+      if kind != "flag" and kind != "value":
+        bye("Alts can only be set on flags and values.")
+      
+      if argalt(alt).name != "--undefined--" or
+        arg(alt).name != "--undefined--":
+          bye(&"'{alt}' alt is already being used.")
+
+      if alt.contains(" "):
+        bye(&"Alt '{name}' name can't have spaces.")
+      
+      if ikind == "lflag" and alt.len != 1:
+        bye("Long flags can only have short flag alts.")
+        
+      if ikind == "sflag" and alt.len == 1:
+        bye("Short flags can only have long flag alts.")
+        
+      if ikind == "lvalue" and alt.len != 1:
+        bye("Long values can only have short value alts.")
+        
+      if ikind == "svalue" and alt.len != 1:
+        bye("Short values can only have long value alts.")
+        
+      aikind = case ikind
+      of "sflag": "lflag"
+      of "lflag": "sflag"
+      of "svalue": "lvalue"
+      of "lvalue": "svalue"
+      else: ""
+    
+    var vals = newSeq[string]()
+    for val in values:
+      vals.add(val)
   
-  # Get the internal kind 
-  # s=short l=long
-  var ikind: string
-    
-  if kind == "flag":
-    ikind = if name.len() == 1: "sflag"
-      else: "lflag"
-    
-  elif kind == "value":
-    ikind = if name.len() == 1: "svalue"
-      else: "lvalue"
-
-  elif kind == "argument":
-      ikind = "argument"
-      inc(num_arguments)
-      if required:
-        inc(num_required_arguments)
-  
-  var aikind = ""
-
-  if alt != "":
-
-    if kind != "flag" and kind != "value":
-      bye("Alts can only be set on flags and values.")
-    
-    if argalt(alt).name != "--undefined--" or
-      arg(alt).name != "--undefined--":
-        bye(&"'{alt}' alt is already being used.")
-
-    if alt.contains(" "):
-      bye(&"Alt '{name}' name can't have spaces.")
-    
-    if ikind == "lflag" and alt.len != 1:
-      bye("Long flags can only have short flag alts.")
-      
-    if ikind == "sflag" and alt.len == 1:
-      bye("Short flags can only have long flag alts.")
-      
-    if ikind == "lvalue" and alt.len != 1:
-      bye("Long values can only have short value alts.")
-      
-    if ikind == "svalue" and alt.len != 1:
-      bye("Short values can only have long value alts.")
-      
-    aikind = case ikind
-    of "sflag": "lflag"
-    of "lflag": "sflag"
-    of "svalue": "lvalue"
-    of "lvalue": "svalue"
-    else: ""
-  
-  opts.add(NapArg(name:name, kind:kind, ikind:ikind, 
-    required:required, help:help, value:value, used:false, alt:alt, aikind:aikind))
+    opts.add(NapArg(name:name, kind:kind, ikind:ikind, required:required, help:help, 
+      value:value, used:false, alt:alt, aikind:aikind, multiple:multiple, values:vals))
 
 # Same as add_arg but returns a reference to the argument object
-proc use_arg*(name="", kind="", required=false, help="", value="", alt=""): NapArg =
-  add_arg(name, kind, required, help, value, alt)
-  arg(name.strip())
+proc use_arg*(name="", kind="", required=false, help="", value="", alt="", 
+  multiple=false, values:openarray[string]=[]): NapArg =
+    add_arg(name, kind, required, help, value, alt, multiple, values)
+    arg(name.strip())
 
 # Prints header items
 proc print_header*() =
@@ -291,7 +295,8 @@ proc update_arg(p: OptParser) =
 
   for opt in opts.mitems:
     let pm = prefix_match(p, opt)
-    if not opt.used and (opt.kind == "argument" or pm[0]):
+    if (not opt.used or opt.multiple) and 
+    (opt.kind == "argument" or pm[0]):
 
       # Do some checks
 
@@ -311,13 +316,19 @@ proc update_arg(p: OptParser) =
       
       # Update
 
-      opt.used = true
-
       if p.kind == cmdArgument:
         opt.value = p.key.strip()
         dec(num_arguments)
       else:
-        opt.value = p.val.strip()
+        let v = p.val.strip()
+        if v.len != 0:
+          if opt.multiple:
+            if not opt.used and opt.values.len > 0:
+              opt.values.setLen(0)
+            opt.values.add(v)
+          else: opt.value = v
+      
+      opt.used = true
       return
     
   # If no match then exit
@@ -341,8 +352,9 @@ proc check_args() =
 
     # Check for required values
     if opt.kind == "value":
-        if (opt.used and opt.value == "") or
-          (opt.required and not opt.used):
+        if (opt.required and not opt.used) or 
+          (not opt.multiple and opt.used and opt.value == "") or
+          (opt.multiple and opt.used and opt.values.len == 0):
             echo &"'{argstr_2(opt)[0]}' needs a value."
             exit = true
     

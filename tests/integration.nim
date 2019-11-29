@@ -11,6 +11,7 @@ let zoobar = use_arg(name="zoobar", kind="value", help="Fork the forkz", alt="b"
 let zoob = use_arg(name="zoob", kind="value", help="Fork the forkerz", alt="B")
 add_arg(name="path", kind="argument", help="Path to rain", required=true)
 let tree = use_arg(name="tree", kind="argument", value="palmera")
+let names = use_arg(name="names", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
 
 # Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
@@ -85,7 +86,10 @@ echo argval_int("x", 22)
 echo argval_float("x", 324.3)
 echo argval_bool("x", false)
 echo argval_string("x", "rainforest")
+echo ""
 
+echo "names:"
+echo names.values
 echo ""
 
 print_header()
