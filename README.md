@@ -61,13 +61,13 @@ let tail = argtail()
 for argument in tail:
     echo argument
 
-# Iterate through the multiple --name values
-for n in name:
-  echo n
-
 # This will either print "cosmic" 
 # or a user submitted value
 echo c.value
+
+# Iterate through the multiple --name values
+for n in name:
+  echo n
 ```
 
 ## Properties
