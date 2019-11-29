@@ -19,6 +19,11 @@ add_arg(name="bar", kind="value", required=false, help="Heaps Alloy", alt="b")
 # Same as add_arg but receives a reference
 let c = use_arg(name="catnip" kind="value" value="cosmic")
 
+# Make a value flag that accepts multiple values
+# For instance myprogram --name=Joe --name=Bill
+# Default values can be sent as a list
+let name = use_arg(name="name", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
+
 # Examples are shown at the top of --help. 
 # Content is a string that can have multiple lines
 # If a line starts with # it is treated as a comment
@@ -56,6 +61,10 @@ let tail = argtail()
 for argument in tail:
     echo argument
 
+# Iterate through the multiple --name values
+for n in name:
+  echo n
+
 # This will either print "cosmic" 
 # or a user submitted value
 echo c.value
@@ -74,6 +83,10 @@ echo c.value
 `value (string):` A default value that is set initially on the object. Defaults to an empty string.
 
 `alt (string):` This is used to make alts in flag and values. For instance -a and --acorn.
+
+`multiple (bool):` Whether a value flag should add provided values to the values list instead of the value property.
+
+`values (seq[string]):` When multiple is true add values to this list. When adding an arg it is received as an openarray[string] so it's easy to send values like ["aa", "bb"].
 
 ### Automatic Properties
 
