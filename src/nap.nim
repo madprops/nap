@@ -75,7 +75,7 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
       bye(&"'{kind}' is not a valid kind.")
       
     if multiple and kind != "value":    
-        bye(&"Only values can have be set as multiple.")
+        bye(&"Only values can be set as multiple.")
     
     # Get the internal kind 
     # s=short l=long
