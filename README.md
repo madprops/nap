@@ -52,9 +52,15 @@ let bar = arg("bar")
 if bar.used:
    echo bar.value
 
-# Read parsing section below
-# to see what this does
-let path = argval_string("path", "/home/me/code")
+# Parsing
+# If given an argument it will
+# use that as a fallback default
+# Default is also returned if the 
+# flag wasn't used
+echo some_int_value.toInt()
+echo some_float_value.toFloat(10.34)
+echo some_bool_value.toBool()
+echo some_string_value.toStr()
 
 # Rest of the arguments
 let tail = argtail()
@@ -141,23 +147,15 @@ b) The value is not empty
 
 c) The value can be parsed correctly
 
-`argval_int:` Parse to int.
+An optional fallback value can be provided.
 
-`argval_float:` Parse to float.
+`obt.toInt():` Parse to int.
 
-`argval_bool:` Parse to bool.
+`obt.toFloat():` Parse to float.
 
-`argval_string:` Return value unchanged.
+`obt.toBool():` Parse to bool.
 
-## Examples
-
-```nim
-# Either supplied age int or 30
-let n = argval_int("age", 30)
-
-# Either supplied country string or "Sealand"
-let c = argval_string("country", "Sealand")
-```
+`obt.toStr:` Return value unchanged.
 
 ## Help
 

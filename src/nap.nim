@@ -5,8 +5,51 @@ import parseopt
 import strutils
 import strformat
 
+# Array that holds all the arguments
+var opts: seq[NapArg]
+
+# Return an argument object
+proc arg*(key:string): NapArg =
+  for opt in opts:
+    if key == opt.name:
+      return opt
+  return NapArg(name:"--undefined--")
+
+# Used to check if argvals have a value
+proc argval_check(o:NapArg): bool =
+  return o.used and o.value != ""
+
+# Return the object's value
 method val*(this:NapArg): string =
   return this.value
+
+# Return argument's parsed value if used
+# if not used then return default
+# if it fails to parse to type return default
+
+method getStr*(this:NapArg, default=""): string =
+  if argval_check(this): this.value else: default
+
+method getInt*(this:NapArg, default=0): int =
+  if argval_check(this):
+    try:
+      this.value.parseInt()
+    except: default
+  else: default
+
+method getFloat*(this:NapArg, default=0.0): float =
+  if argval_check(this):
+    try:
+      this.value.parseFloat()
+    except: default
+  else: default
+
+method getBool*(this:NapArg, default=false): bool =
+  if argval_check(this):
+    try:
+      this.value.parseBool()
+    except: default
+  else: default
 
 # Holds the headers
 var xheaders: seq[string]
@@ -24,9 +67,6 @@ var num_required_arguments = 0
 # Rest of arguments
 var tail: seq[string]
 
-# Array that holds all the arguments
-var opts: seq[NapArg]
-
 # Available kinds of arguments
 let kinds = ["flag", "value", "argument"]
 
@@ -34,13 +74,6 @@ let kinds = ["flag", "value", "argument"]
 proc bye(message: string) =
   echo message
   quit(0)
-
-# Return an argument object
-proc arg*(key:string): NapArg =
-  for opt in opts:
-    if key == opt.name:
-      return opt
-  return NapArg(name:"--undefined--")
 
 # Return all argument objects
 proc args*(): seq[NapArg] =
@@ -399,49 +432,6 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
 # Return the rest of  the arguments
 proc argtail*(): seq[string] =
   return tail
-
-# Used to check if argvals have a value
-proc argval_check(o:NapArg): bool =
-  return o.used and o.value != ""
-
-# Return argument's value if used
-# if not used then return default
-# if it fails to parse to int return default
-proc argval_int*(key:string, default:int): int =
-  let o = arg(key)
-  if argval_check(o):
-    try:
-      return parseInt(o.value)
-    except: discard
-  return default
-
-# Return argument's value if used
-# if not used then return default
-# if it fails to parse to float return default
-proc argval_float*(key:string, default:float): float =
-  let o = arg(key)
-  if argval_check(o):
-    try:
-      return parseFloat(o.value)
-    except: discard
-  return default
-
-# Return argument's value if used
-# if not used then return default
-# if it fails to parse to bool return default
-proc argval_bool*(key:string, default:bool): bool =
-  let o = arg(key)
-  if argval_check(o):
-    try:
-      return parseBool(o.value)
-    except: discard
-  return default
-
-# Return argument's value if used
-# if not used then return default
-proc argval_string*(key:string, default:string): string =
-  let o = arg(key)
-  if argval_check(o): o.value else: default
 
 # Adds a header
 proc add_header*(header:string) =

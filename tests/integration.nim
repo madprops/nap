@@ -1,6 +1,7 @@
 # File used to test the libarary
 
 import nap
+import strformat
 
 # Add arguments
 add_arg(name="a", kind="flag", help="Annotate a notation", alt="acorn")
@@ -12,6 +13,10 @@ let zoob = use_arg(name="zoob", kind="value", help="Fork the forkerz", alt="B")
 add_arg(name="path", kind="argument", help="Path to rain", required=true)
 let tree = use_arg(name="tree", kind="argument", value="palmera")
 let names = use_arg(name="names", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
+var intie = use_arg(name="intie", kind="value", value="2")
+var floatie = use_arg(name="floatie", kind="value", value="3.0")
+var stringie = use_arg(name="stringie", kind="value", value="ball")
+var boolie = use_arg(name="boolie", kind="value", value="true")
 
 # Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
@@ -81,11 +86,11 @@ echo "tail:"
 echo argtail()
 echo ""
 
-echo "argval tests:"
-echo argval_int("x", 22)
-echo argval_float("x", 324.3)
-echo argval_bool("x", false)
-echo argval_string("x", "rainforest")
+echo "arg parse tests:"
+echo intie.getInt(10)
+echo floatie.getFloat(10.0)
+echo stringie.getStr("OK")
+echo not boolie.getBool()
 echo ""
 
 echo "names:"
