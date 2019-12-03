@@ -55,14 +55,13 @@ if bar.used:
 # Parsing
 
 # These will either return the proper type
-# Or fail if no value was provided by the user or
-# if it fails to parse
-echo some_int_value.getInt()
+# Or exit with a message if it fails to parse
+echo some_int_value.getInt(10)
 echo some_bool_value.getBool()
 
 # This one disables exit_on_fail
-# and provides a fallback value
-echo some_float_value.getFloat(false, 10.34)
+# and also provides a fallback value
+echo some_float_value.getFloat(10.34, false)
 
 # Rest of the arguments
 let tail = argtail()

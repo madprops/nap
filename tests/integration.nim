@@ -86,8 +86,8 @@ echo argtail()
 echo ""
 
 echo "arg parse tests:"
-echo intie.getInt(false, 10)
-echo floatie.getFloat(false, 10.0)
+echo intie.getInt(100, false)
+echo floatie.getFloat(100.0)
 echo arg("boolie").getBool()
 echo ""
 

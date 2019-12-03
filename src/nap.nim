@@ -31,7 +31,7 @@ proc on_parse_error(name:string, tkind:string) =
     echo &"Failed to parse '{name}' to '{tkind}'."
     quit(0)
 
-method getInt*(this:NapArg, exit_on_fail=true, fallback=0): int =
+method getInt*(this:NapArg, fallback=0, exit_on_fail=true): int =
   if argval_check(this):
     try:
       return this.value.parseInt()
@@ -41,7 +41,7 @@ method getInt*(this:NapArg, exit_on_fail=true, fallback=0): int =
   
   return fallback
       
-method getFloat*(this:NapArg, exit_on_fail=true, fallback=0.0): float =
+method getFloat*(this:NapArg, fallback=0.0, exit_on_fail=true): float =
   if argval_check(this):
     try:
       return this.value.parseFloat()
@@ -51,7 +51,7 @@ method getFloat*(this:NapArg, exit_on_fail=true, fallback=0.0): float =
     
   return fallback
 
-method getBool*(this:NapArg, exit_on_fail=true, fallback=false): bool =
+method getBool*(this:NapArg, fallback=false, exit_on_fail=true): bool =
   if argval_check(this):
     try:
       return this.value.parseBool()
