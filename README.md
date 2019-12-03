@@ -135,7 +135,7 @@ If a line starts with # it is treated as a comment.
 
 # Parsing
 
-This will try to parse a provided value to a specific type.
+These will try to parse a provided value to a specific type.
 
 If value doesn't exist or it fails to parse
 
