@@ -27,29 +27,39 @@ method val*(this:NapArg): string =
 # if not used then return default
 # if it fails to parse to type return default
 
-method getStr*(this:NapArg, default=""): string =
-  if argval_check(this): this.value else: default
+proc on_parse_error(name:string, tkind:string) =
+    echo &"Failed to parse '{name}' to '{tkind}'."
+    quit(0)
 
-method getInt*(this:NapArg, default=0): int =
+method getInt*(this:NapArg, exit_on_fail=true, fallback=0): int =
   if argval_check(this):
     try:
-      this.value.parseInt()
-    except: default
-  else: default
-
-method getFloat*(this:NapArg, default=0.0): float =
+      return this.value.parseInt()
+    except: discard
+  
+  if exit_on_fail: 
+    on_parse_error(this.name, "int")
+  else: return fallback
+      
+method getFloat*(this:NapArg, exit_on_fail=true, fallback=0.0): float =
   if argval_check(this):
     try:
-      this.value.parseFloat()
-    except: default
-  else: default
+      return this.value.parseFloat()
+    except: discard
+    
+  if exit_on_fail: 
+    on_parse_error(this.name, "float")
+  else: return fallback
 
-method getBool*(this:NapArg, default=false): bool =
+method getBool*(this:NapArg, exit_on_fail=true, fallback=false): bool =
   if argval_check(this):
     try:
-      this.value.parseBool()
-    except: default
-  else: default
+      return this.value.parseBool()
+    except: discard
+    
+  if exit_on_fail: 
+    on_parse_error(this.name, "bool")
+  else: return fallback
 
 # Holds the headers
 var xheaders: seq[string]

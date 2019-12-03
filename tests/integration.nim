@@ -15,8 +15,7 @@ let tree = use_arg(name="tree", kind="argument", value="palmera")
 let names = use_arg(name="names", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
 var intie = use_arg(name="intie", kind="value", value="2")
 var floatie = use_arg(name="floatie", kind="value", value="3.0")
-var stringie = use_arg(name="stringie", kind="value", value="ball")
-var boolie = use_arg(name="boolie", kind="value", value="true")
+add_arg(name="boolie", kind="value", value="true")
 
 # Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
@@ -87,10 +86,9 @@ echo argtail()
 echo ""
 
 echo "arg parse tests:"
-echo intie.getInt(10)
-echo floatie.getFloat(10.0)
-echo stringie.getStr("OK")
-echo not boolie.getBool()
+echo intie.getInt(false, 10)
+echo floatie.getFloat(false, 10.0)
+echo arg("boolie").getBool()
 echo ""
 
 echo "names:"

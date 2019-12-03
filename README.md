@@ -53,14 +53,16 @@ if bar.used:
    echo bar.value
 
 # Parsing
-# If given an argument it will
-# use that as a fallback default
-# Default is also returned if the 
-# flag wasn't used
+
+# These will either return the proper type
+# Or fail if no value was provided by the user or
+# if it fails to parse
 echo some_int_value.toInt()
-echo some_float_value.toFloat(10.34)
 echo some_bool_value.toBool()
-echo some_string_value.toStr()
+
+# This one disables exit_on_fail
+# and provides a fallback value
+echo some_float_value.toFloat(false, 10.34)
 
 # Rest of the arguments
 let tail = argtail()
@@ -133,29 +135,19 @@ If a line starts with # it is treated as a comment.
 
 # Parsing
 
-These functions take 2 arguments.
+This will try to parse a provided value to a specific type.
 
-The first one is the name of the argument.
+If value doesn't exist or it fails to parse
 
-The second is the default value to use if it fails. 
+then it either shows a message and exits
 
-It returns a value (not the default) if:
+or returns a provided fallback.
 
-a) The argument was used
+`obj.toInt(exit_on_fail:bool, fallback:int):` Parse to int.
 
-b) The value is not empty
+`obj.toFloat(exit_on_fail:bool, fallback:float):` Parse to float.
 
-c) The value can be parsed correctly
-
-An optional fallback value can be provided.
-
-`obt.toInt():` Parse to int.
-
-`obt.toFloat():` Parse to float.
-
-`obt.toBool():` Parse to bool.
-
-`obt.toStr:` Return value unchanged.
+`obj.toBool(exit_on_fail:bool, fallback:bool):` Parse to bool.
 
 ## Help
 
