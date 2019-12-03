@@ -57,12 +57,12 @@ if bar.used:
 # These will either return the proper type
 # Or fail if no value was provided by the user or
 # if it fails to parse
-echo some_int_value.toInt()
-echo some_bool_value.toBool()
+echo some_int_value.getInt()
+echo some_bool_value.getBool()
 
 # This one disables exit_on_fail
 # and provides a fallback value
-echo some_float_value.toFloat(false, 10.34)
+echo some_float_value.getFloat(false, 10.34)
 
 # Rest of the arguments
 let tail = argtail()
@@ -143,11 +143,11 @@ then it either shows a message and exits
 
 or returns a provided fallback.
 
-`obj.toInt(exit_on_fail:bool, fallback:int):` Parse to int.
+`obj.getInt(exit_on_fail:bool, fallback:int): int`
 
-`obj.toFloat(exit_on_fail:bool, fallback:float):` Parse to float.
+`obj.getFloat(exit_on_fail:bool, fallback:float): float`
 
-`obj.toBool(exit_on_fail:bool, fallback:bool):` Parse to bool.
+`obj.getBool(exit_on_fail:bool, fallback:bool): bool`
 
 ## Help
 
