@@ -141,7 +141,7 @@ If value doesn't exist or it fails to parse
 
 then it either shows a message and exits
 
-or returns a provided fallback.
+or returns a (provided || default) fallback.
 
 `obj.getInt(exit_on_fail:bool, fallback:int): int`
 

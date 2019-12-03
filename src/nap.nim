@@ -35,31 +35,31 @@ method getInt*(this:NapArg, exit_on_fail=true, fallback=0): int =
   if argval_check(this):
     try:
       return this.value.parseInt()
-    except: discard
+    except:
+      if exit_on_fail:
+        on_parse_error(this.name, "int")
   
-  if exit_on_fail: 
-    on_parse_error(this.name, "int")
-  else: return fallback
+  return fallback
       
 method getFloat*(this:NapArg, exit_on_fail=true, fallback=0.0): float =
   if argval_check(this):
     try:
       return this.value.parseFloat()
-    except: discard
+    except:
+      if exit_on_fail:
+        on_parse_error(this.name, "float")
     
-  if exit_on_fail: 
-    on_parse_error(this.name, "float")
-  else: return fallback
+  return fallback
 
 method getBool*(this:NapArg, exit_on_fail=true, fallback=false): bool =
   if argval_check(this):
     try:
       return this.value.parseBool()
-    except: discard
+    except:
+      if exit_on_fail:
+        on_parse_error(this.name, "bool")
     
-  if exit_on_fail: 
-    on_parse_error(this.name, "bool")
-  else: return fallback
+  return fallback
 
 # Holds the headers
 var xheaders: seq[string]
