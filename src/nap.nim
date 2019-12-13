@@ -176,7 +176,7 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
       vals.add(val)
   
     opts.add(NapArg(name:name, kind:kind, ikind:ikind, required:required, help:help, 
-      value:value, used:false, alt:alt, aikind:aikind, multiple:multiple, values:vals))
+      value:value, used:false, alt:alt, aikind:aikind, multiple:multiple, values:vals, count:0))
 
 # Same as add_arg but returns a reference to the argument object
 proc use_arg*(name="", kind="", required=false, help="", value="", alt="", 
@@ -338,8 +338,8 @@ proc update_arg(p: OptParser) =
 
   for opt in opts.mitems:
     let pm = prefix_match(p, opt)
-    if (not opt.used or opt.multiple) and 
-    (opt.kind == "argument" or pm[0]):
+    if ( ( not opt.used or opt.kind == "flag" ) or opt.multiple ) and 
+    ( opt.kind == "argument" or pm[0] ):
 
       # Do some checks
 
@@ -372,15 +372,22 @@ proc update_arg(p: OptParser) =
           else: opt.value = v
       
       opt.used = true
+      inc(opt.count)
       return
     
   # If no match then exit
+  var msg = ""
   let ax = argstr(p)
-  let closest = closest_arg(p)
-  var cstmsg = ""
-  if closest[0] != "":
-    cstmsg = &" Maybe you meant {closest[0]} {closest[1]} ?"
-  bye(&"'{ax[0]}' is not a valid {ax[1]}.{cstmsg}")
+  let opt = arg(p.key)
+  if opt.name == "--undefined--":
+    msg = &"'{ax[0]}' is not a valid {ax[1]}."
+    let closest = closest_arg(p)
+    if closest[0] != "":
+      msg.add(&" Maybe you meant {closest[0]} {closest[1]} ?")
+  else:
+    if opt.used: 
+      msg = &"'{ax[0]}' was already used and is not set to multiple."
+  bye(msg)
 
 # Check for missing or
 # unecessary values or

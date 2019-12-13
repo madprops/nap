@@ -11,6 +11,7 @@ type NapArg* = ref object
   aikind*: string
   multiple*: bool
   values*: seq[string]
+  count*: int
 
 # Example object
 type Example* = ref object

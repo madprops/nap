@@ -1,11 +1,10 @@
 # File used to test the libarary
 
 import nap
-import strformat
 
 # Add arguments
 add_arg(name="a", kind="flag", help="Annotate a notation", alt="acorn")
-let boo = use_arg(name="boo", kind="flag", help="Scare for life")
+let boo = use_arg(name="boo", kind="flag", help="Scare for life", alt="o")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
 let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork", alt="f")
 let zoobar = use_arg(name="zoobar", kind="value", help="Fork the forkz", alt="b")
@@ -45,6 +44,7 @@ echo ""
 
 echo "boo:"
 echo boo.used
+echo boo.count
 echo ""
 
 if foo.used:
