@@ -107,6 +107,8 @@ These are properties that are handled internally, but will still be available to
 
 `aikind (string):` This is used internally to differentiate between different kinds of flag and value kinds in alts.
 
+`count (int):` How many times a flag was repeated. For instance, count of 'c' in `-ccc` would be 3.
+
 ## Methods
 
 `add_arg:` Register an argument to be considered.
