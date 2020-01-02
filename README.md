@@ -144,11 +144,11 @@ then it either shows a message and exits
 
 or returns a (provided || default) fallback.
 
-`obj.getInt(exit_on_fail:bool, fallback:int): int`
+`obj.getInt(fallback=0, exit_on_fail=true): int`
 
-`obj.getFloat(exit_on_fail:bool, fallback:float): float`
+`obj.getFloat(fallback=0.0, exit_on_fail=true): float`
 
-`obj.getBool(exit_on_fail:bool, fallback:bool): bool`
+`obj.getBool(fallback=false, exit_on_fail=true): bool`
 
 ## Help
 
