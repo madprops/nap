@@ -2,8 +2,9 @@ import types
 import utils
 import os
 import parseopt
-import strutils
 import strformat
+import strutils
+export types
 
 # Array that holds all the arguments
 var opts: seq[NapArg]
@@ -14,52 +15,6 @@ proc arg*(key:string): NapArg =
     if key == opt.name:
       return opt
   return NapArg(name:"--undefined--")
-
-# Used to check if argvals have a value
-proc argval_check(o:NapArg): bool =
-  return o.used and o.value != ""
-
-# Return the object's value
-method val*(this:NapArg): string =
-  return this.value
-
-# Return argument's parsed value if used
-# if not used then return default
-# if it fails to parse to type return default
-
-proc on_parse_error(name:string, tkind:string) =
-    echo &"Failed to parse '{name}' to '{tkind}'."
-    quit(0)
-
-method getInt*(this:NapArg, fallback=0, exit_on_fail=true): int =
-  if argval_check(this):
-    try:
-      return this.value.parseInt()
-    except:
-      if exit_on_fail:
-        on_parse_error(this.name, "int")
-  
-  return fallback
-      
-method getFloat*(this:NapArg, fallback=0.0, exit_on_fail=true): float =
-  if argval_check(this):
-    try:
-      return this.value.parseFloat()
-    except:
-      if exit_on_fail:
-        on_parse_error(this.name, "float")
-    
-  return fallback
-
-method getBool*(this:NapArg, fallback=false, exit_on_fail=true): bool =
-  if argval_check(this):
-    try:
-      return this.value.parseBool()
-    except:
-      if exit_on_fail:
-        on_parse_error(this.name, "bool")
-    
-  return fallback
 
 # Holds the headers
 var xheaders: seq[string]
@@ -97,7 +52,7 @@ proc argalt*(alt_name:string): NapArg =
 
 # Register an argument to be considered
 proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
-  multiple=false, values:openarray[string]=[]) =
+  multiple=false, values:openarray[string]=[]): NapArg {.discardable.} =
     var name = name.strip()
     var kind = kind.strip()
     var help = help.strip()
@@ -177,12 +132,8 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
   
     opts.add(NapArg(name:name, kind:kind, ikind:ikind, required:required, help:help, 
       value:value, used:false, alt:alt, aikind:aikind, multiple:multiple, values:vals, count:0))
-
-# Same as add_arg but returns a reference to the argument object
-proc use_arg*(name="", kind="", required=false, help="", value="", alt="", 
-  multiple=false, values:openarray[string]=[]): NapArg =
-    add_arg(name, kind, required, help, value, alt, multiple, values)
-    arg(name.strip())
+    
+    return arg(name)
 
 # Prints header items
 proc print_header*() =

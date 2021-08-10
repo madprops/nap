@@ -15,14 +15,12 @@ add_arg(name="path", kind="argument", required=true, help="Pathfinder Dir")
 # Adding a `-b` alt to the `--bar` value flag
 # This will work with `--bar=x` and `-b=x`
 add_arg(name="bar", kind="value", required=false, help="Heaps Alloy", alt="b")
-
-# Same as add_arg but receives a reference
-let c = use_arg(name="catnip" kind="value" value="cosmic")
+let c = add_arg(name="catnip" kind="value" value="cosmic")
 
 # Make a value flag that accepts multiple values
 # For instance myprogram --name=Joe --name=Bill
 # Default values can be sent as a list
-let name = use_arg(name="name", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
+let name = arg_arg(name="name", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
 
 # Examples are shown at the top of --help. 
 # Content is a string that can have multiple lines
@@ -54,14 +52,10 @@ if bar.used:
 
 # Parsing
 
-# These will either return the proper type
-# Or exit with a message if it fails to parse
-echo some_int_value.getInt(10)
+# Parse the arg into the proper type
+echo some_int_value.getInt()
+echo some_bool_value.getFloat()
 echo some_bool_value.getBool()
-
-# This one disables exit_on_fail
-# and also provides a fallback value
-echo some_float_value.getFloat(10.34, false)
 
 # Rest of the arguments
 let tail = argtail()
@@ -101,7 +95,7 @@ These are properties that are handled internally, but will still be available to
 
 `used (bool):` If the argument was used at all. For instance if "-b" was provided, used will be true.
 
-`value (string):` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string. You can use `val` as a shortcut.
+`value (string):` The value it has when parsed. For instance in "--foo=200" foo.value = "200". The value will always be a string.
 
 `ikind (string):` This is used internally to differentiate between different kinds of flag and value kinds.
 
@@ -112,8 +106,6 @@ These are properties that are handled internally, but will still be available to
 ## Methods
 
 `add_arg:` Register an argument to be considered.
-
-`use_arg:` Same as add_arg but it returns the argument object.
 
 `parse_args:` Do the processing. Optional parameters list can be sent, else it uses the default one.
 
@@ -138,17 +130,13 @@ If a line starts with # it is treated as a comment.
 
 These will try to parse a provided value to a specific type.
 
-If value doesn't exist or it fails to parse
+If no value was manually provided it uses the "value" property that was used when creating the argument.
 
-then it either shows a message and exits
+`obj.getInt(): int`
 
-or returns a (provided || default) fallback.
+`obj.getFloat(): float`
 
-`obj.getInt(fallback=0, exit_on_fail=true): int`
-
-`obj.getFloat(fallback=0.0, exit_on_fail=true): float`
-
-`obj.getBool(fallback=false, exit_on_fail=true): bool`
+`obj.getBool(): bool`
 
 ## Help
 

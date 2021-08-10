@@ -4,16 +4,16 @@ import nap
 
 # Add arguments
 add_arg(name="a", kind="flag", help="Annotate a notation", alt="acorn")
-let boo = use_arg(name="boo", kind="flag", help="Scare for life", alt="o")
+let boo = add_arg(name="boo", kind="flag", help="Scare for life", alt="o")
 add_arg(name="x", kind="value", required=false, help="Cut scissors")
-let foo = use_arg(name="foo", kind="value", required=true, help="Fork the fork", alt="f")
-let zoobar = use_arg(name="zoobar", kind="value", help="Fork the forkz", alt="b")
-let zoob = use_arg(name="zoob", kind="value", help="Fork the forkerz", alt="B")
+let foo = add_arg(name="foo", kind="value", required=true, help="Fork the fork", alt="f")
+let zoobar = add_arg(name="zoobar", kind="value", help="Fork the forkz", alt="b")
+let zoob = add_arg(name="zoob", kind="value", help="Fork the forkerz", alt="B")
 add_arg(name="path", kind="argument", help="Path to rain", required=true)
-let tree = use_arg(name="tree", kind="argument", value="palmera")
-let names = use_arg(name="names", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
-var intie = use_arg(name="intie", kind="value", value="2")
-var floatie = use_arg(name="floatie", kind="value", value="3.0")
+let tree = add_arg(name="tree", kind="argument", value="palmera")
+let names = add_arg(name="names", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
+var intie = add_arg(name="intie", kind="value", value="2")
+var floatie = add_arg(name="floatie", kind="value", value="3.0")
 add_arg(name="boolie", kind="value", value="true")
 
 # Add examples
@@ -86,8 +86,8 @@ echo argtail()
 echo ""
 
 echo "arg parse tests:"
-echo intie.getInt(100, false)
-echo floatie.getFloat(100.0)
+echo intie.getInt()
+echo floatie.getFloat()
 echo arg("boolie").getBool()
 echo ""
 

@@ -1,3 +1,5 @@
+import strutils
+
 # Argument object
 type NapArg* = ref object
   name*: string
@@ -9,9 +11,18 @@ type NapArg* = ref object
   used*: bool
   alt*: string
   aikind*: string
-  multiple*: bool
+  multiple*: bool 
   values*: seq[string]
   count*: int
+
+proc getInt*(a:NapArg): int =
+  return a.value.parseInt()
+      
+proc getFloat*(a:NapArg): float =
+  return a.value.parseFloat()
+
+proc getBool*(a:NapArg): bool =
+  return a.value.parseBool()
 
 # Example object
 type Example* = ref object
