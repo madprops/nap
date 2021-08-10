@@ -188,27 +188,27 @@ proc print_help*() =
     print("Flags", "title")
     for opt in sflags:
       echo &"\n  -{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
-      print(xhelp(opt.help), "content")
+      print(opt.help, "content")
     for opt in lflags:
       echo &"\n  --{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
-      print(xhelp(opt.help), "content")
+      print(opt.help, "content")
 
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
     print("Values", "title")
     for opt in svalues:
       echo &"\n  -{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
-      print(xhelp(opt.help), "content")
+      print(opt.help, "content")
     for opt in lvalues:
       echo &"\n  --{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
-      print(xhelp(opt.help), "content")
+      print(opt.help, "content")
   
   # Print arguments
   if arguments.len() > 0:
     print("Arguments", "title")
     for opt in arguments:
       echo &"\n  {opt.name}{xrequired(opt.required)}"
-      print(xhelp(opt.help), "content")
+      print(opt.help, "content")
   
   if xnotes.len > 0:
     print("Notes", "title")

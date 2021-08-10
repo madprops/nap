@@ -23,6 +23,8 @@ proc string_similarity*(s1:string, s2:string): float =
 
 # Different kinds of prints
 proc print*(s:string, kind:string) =
+  if s == "": return
+  
   case kind
   of "header":
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{s.strip()}{ansiResetCode}"
@@ -49,10 +51,6 @@ proc xalt*(alt:string): string =
     return &" (or {dash}{alt})" 
   else: 
     return ""
-
-# Conditional help message
-proc xhelp*(help: string): string =
-  if help != "": help else: "I don't know what this does"
 
 # Util to change kinds to strings
 proc argstr*(p: OptParser): (string, string) =
