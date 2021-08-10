@@ -1,10 +1,3 @@
-This is my implementation of an argument parser for nim.
-
-There are already others in existence and being used but I needed one that would meet my requirements.
-
-The way it's made makes it very easy to register and use arguments, while being flexible and letting
-the user decide on how to use it.
-
 ## Example Usage
 
 Register arguments:
