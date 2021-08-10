@@ -54,7 +54,7 @@ if bar.used:
 
 # Parse the arg into the proper type
 echo some_int_value.getInt()
-echo some_bool_value.getFloat()
+echo some_float_value.getFloat()
 echo some_bool_value.getBool()
 
 # Rest of the arguments
