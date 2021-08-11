@@ -15,6 +15,7 @@ let names = add_arg(name="names", kind="value", multiple=true, values=["jaja", "
 var intie = add_arg(name="intie", kind="value", value="2")
 var floatie = add_arg(name="floatie", kind="value", value="3.0")
 add_arg(name="boolie", kind="value", value="true")
+# add_arg(name="acorn", alt="z", kind="flag")
 
 # Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
@@ -40,6 +41,11 @@ echo ""
 let a = arg("a")
 echo "a:"
 echo a.used
+echo ""
+
+let ac = argalt("acorn")
+echo "acorn:"
+echo ac.used
 echo ""
 
 echo "boo:"

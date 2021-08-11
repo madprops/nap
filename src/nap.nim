@@ -44,6 +44,7 @@ proc bye(message: string) =
 proc args*(): seq[NapArg] =
   return opts
 
+# Return an argument by its alt name
 proc argalt*(alt_name:string): NapArg =
   for opt in opts:
     if alt_name == opt.alt:
@@ -58,7 +59,10 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     var help = help.strip()
 
     if arg(name).name != "--undefined--":
-      bye(&"'{name}' can't be registered twice.")
+      bye(&"'{name}' is already being used")
+    
+    if argalt(name).name != "--undefined--":
+      bye(&"'{name}' is already being used")
 
     if name == "":
       bye("Names can't be empty.")
@@ -96,13 +100,12 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     var aikind = ""
 
     if alt != "":
-
       if kind != "flag" and kind != "value":
         bye("Alts can only be set on flags and values.")
       
       if argalt(alt).name != "--undefined--" or
         arg(alt).name != "--undefined--":
-          bye(&"'{alt}' alt is already being used.")
+          bye(&"'{alt}' is already being used.")
 
       if alt.contains(" "):
         bye(&"Alt '{name}' name can't have spaces.")
