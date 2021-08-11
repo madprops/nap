@@ -1,2 +1,2 @@
 #!/bin/bash
-nim compile -r tests/integration.nim "${@:1}"
+nim compile --run -o:bin/nap-debug src/nap.nim $@
