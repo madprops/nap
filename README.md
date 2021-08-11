@@ -36,10 +36,10 @@ parse_args()
 
 Now it's ready to use:
 ```nim
-let foo = arg("foo")
+let foo = get_arg("foo")
 echo foo.used
 
-let bar = arg("bar")
+let bar = get_arg("bar")
 if bar.used:
    echo bar.value
 
@@ -51,7 +51,7 @@ echo some_float_value.getFloat()
 echo some_bool_value.getBool()
 
 # Rest of the arguments
-let tail = argtail()
+let tail = get_argtail()
 for argument in tail:
     echo argument
 
@@ -102,11 +102,11 @@ These are properties that are handled internally, but will still be available to
 
 `parse_args:` Do the processing. Optional parameters list can be sent, else it uses the default one.
 
-`arg:` Get an argument object.
+`get_arg:` Get an argument object.
 
-`args:` Get all argument objects.
+`get_args:` Get all argument objects.
 
-`argtail:` Get the rest of the arguments.
+`get_argtail:` Get the rest of the arguments.
 
 `add_header:` Include a line that will appear at the top.
 

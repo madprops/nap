@@ -10,11 +10,25 @@ export types
 var opts: seq[NapArg]
 
 # Return an argument object
-proc arg*(key:string): NapArg =
+proc get_arg*(name:string): NapArg =
   for opt in opts:
-    if key == opt.name:
+    if name == opt.name:
       return opt
+    if name == opt.alt:
+      return opt    
+
   return NapArg(name:"--undefined--")
+
+# Return all argument objects
+proc get_args*(): seq[NapArg] =
+  return opts
+
+# Rest of arguments
+var tail: seq[string]
+
+# Return the rest of  the arguments
+proc get_argtail*(): seq[string] =
+  return tail
 
 # Holds the headers
 var xheaders: seq[string]
@@ -29,9 +43,6 @@ var xexamples: seq[Example]
 var num_arguments = 0
 var num_required_arguments = 0
 
-# Rest of arguments
-var tail: seq[string]
-
 # Available kinds of arguments
 let kinds = ["flag", "value", "argument"]
 
@@ -40,17 +51,6 @@ proc bye(message: string) =
   echo message
   quit(0)
 
-# Return all argument objects
-proc args*(): seq[NapArg] =
-  return opts
-
-# Return an argument by its alt name
-proc argalt*(alt_name:string): NapArg =
-  for opt in opts:
-    if alt_name == opt.alt:
-      return opt
-  return NapArg(name:"--undefined--") 
-
 # Register an argument to be considered
 proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
   multiple=false, values:openarray[string]=[]): NapArg {.discardable.} =
@@ -58,11 +58,12 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     var kind = kind.strip()
     var help = help.strip()
 
-    if arg(name).name != "--undefined--":
+    if get_arg(name).name != "--undefined--":
       bye(&"'{name}' is already being used")
     
-    if argalt(name).name != "--undefined--":
-      bye(&"'{name}' is already being used")
+    if alt != "":
+      if get_arg(alt).name != "--undefined--":
+        bye(&"'{alt}' is already being used")
 
     if name == "":
       bye("Names can't be empty.")
@@ -102,10 +103,6 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     if alt != "":
       if kind != "flag" and kind != "value":
         bye("Alts can only be set on flags and values.")
-      
-      if argalt(alt).name != "--undefined--" or
-        arg(alt).name != "--undefined--":
-          bye(&"'{alt}' is already being used.")
 
       if alt.contains(" "):
         bye(&"Alt '{name}' name can't have spaces.")
@@ -136,7 +133,7 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     opts.add(NapArg(name:name, kind:kind, ikind:ikind, required:required, help:help, 
       value:value, used:false, alt:alt, aikind:aikind, multiple:multiple, values:vals, count:0))
     
-    return arg(name)
+    return get_arg(name)
 
 # Prints header items
 proc print_header*() =
@@ -332,7 +329,7 @@ proc update_arg(p: OptParser) =
   # If no match then exit
   var msg = ""
   let ax = argstr(p)
-  let opt = arg(p.key)
+  let opt = get_arg(p.key)
   if opt.name == "--undefined--":
     msg = &"'{ax[0]}' is not a valid {ax[1]}."
     let closest = closest_arg(p)
@@ -399,10 +396,6 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
       update_arg(p)
   
   check_args()
-
-# Return the rest of  the arguments
-proc argtail*(): seq[string] =
-  return tail
 
 # Adds a header
 proc add_header*(header:string) =

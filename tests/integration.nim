@@ -16,6 +16,7 @@ var intie = add_arg(name="intie", kind="value", value="2")
 var floatie = add_arg(name="floatie", kind="value", value="3.0")
 add_arg(name="boolie", kind="value", value="true")
 # add_arg(name="acorn", alt="z", kind="flag")
+# add_arg(name="z", alt="acorn", kind="flag")
 
 # Add examples
 add_example(title="Make a directory", content="mkdir somedir\n#This will create a dir\n#It cooks the dinner")
@@ -38,12 +39,12 @@ parse_args()
 print_help()
 echo ""
 
-let a = arg("a")
+let a = get_arg("a")
 echo "a:"
 echo a.used
 echo ""
 
-let ac = argalt("acorn")
+let ac = get_arg("acorn")
 echo "acorn:"
 echo ac.used
 echo ""
@@ -68,13 +69,13 @@ if zoob.used:
   echo zoob.value
   echo ""
 
-let x = arg("x")
+let x = get_arg("x")
 if x.used:
   echo "x:"
   echo x.value
   echo ""
 
-let path = arg("path")
+let path = get_arg("path")
 if path.used:
   echo "path:"
   echo path.value
@@ -88,17 +89,20 @@ echo ""
 # Rest of 
 # the arguments
 echo "tail:"
-echo argtail()
+echo get_argtail()
 echo ""
 
 echo "arg parse tests:"
 echo intie.getInt()
 echo floatie.getFloat()
-echo arg("boolie").getBool()
+echo get_arg("boolie").getBool()
 echo ""
 
 echo "names:"
 echo names.values
+echo ""
+
+echo "Number of args: ", get_args().len
 echo ""
 
 print_header()
