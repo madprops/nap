@@ -13,7 +13,7 @@ let c = add_arg(name="catnip" kind="value" value="cosmic")
 # Make a value flag that accepts multiple values
 # For instance myprogram --name=Joe --name=Bill
 # Default values can be sent as a list
-let name = arg_arg(name="name", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
+let name = add_arg(name="name", kind="value", multiple=true, values=["jaja", "jojo"], alt="n")
 
 # Examples are shown at the top of --help. 
 # Content is a string that can have multiple lines
