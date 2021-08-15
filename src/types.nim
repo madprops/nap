@@ -15,13 +15,13 @@ type NapArg* = ref object
   values*: seq[string]
   count*: int
 
-proc getInt*(a:NapArg): int =
+proc get_int*(a:NapArg): int =
   return a.value.parseInt()
       
-proc getFloat*(a:NapArg): float =
+proc get_float*(a:NapArg): float =
   return a.value.parseFloat()
 
-proc getBool*(a:NapArg): bool =
+proc get_bool*(a:NapArg): bool =
   return a.value.parseBool()
 
 # Example object

@@ -93,9 +93,9 @@ echo get_argtail()
 echo ""
 
 echo "arg parse tests:"
-echo intie.getInt()
-echo floatie.getFloat()
-echo get_arg("boolie").getBool()
+echo intie.get_int()
+echo floatie.get_float()
+echo get_arg("boolie").get_bool()
 echo ""
 
 echo "names:"

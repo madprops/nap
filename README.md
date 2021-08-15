@@ -46,9 +46,9 @@ if bar.used:
 # Parsing
 
 # Parse the arg into the proper type
-echo some_int_value.getInt()
-echo some_float_value.getFloat()
-echo some_bool_value.getBool()
+echo some_int_value.get_int()
+echo some_float_value.get_float()
+echo some_bool_value.get_bool()
 
 # Rest of the arguments
 let tail = get_argtail()
@@ -125,11 +125,11 @@ These will try to parse a provided value to a specific type.
 
 If no value was manually provided it uses the "value" property that was used when creating the argument.
 
-`obj.getInt(): int`
+`obj.get_int(): int`
 
-`obj.getFloat(): float`
+`obj.get_float(): float`
 
-`obj.getBool(): bool`
+`obj.get_bool(): bool`
 
 ## Help
 
