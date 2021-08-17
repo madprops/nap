@@ -1,10 +1,10 @@
-import types
 import std/editdistance as edistance
-import strformat
-import strutils
-import parseopt
-import terminal
-import nre
+import std/strformat
+import std/strutils
+import std/parseopt
+import std/terminal
+import std/nre
+import types
 
 # Find the similarity between two strings
 # Closest to 1 is more similar

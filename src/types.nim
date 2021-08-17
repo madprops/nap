@@ -1,4 +1,4 @@
-import strutils
+import std/strutils
 
 # Argument object
 type NapArg* = ref object
