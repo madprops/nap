@@ -1,6 +1,4 @@
-# File used to test the libarary
-
-import nap
+import pkg/nap
 
 # Add arguments
 add_arg(name="a", kind="flag", help="Annotate a notation", alt="acorn")

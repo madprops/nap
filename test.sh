@@ -1,2 +1,2 @@
 #!/bin/bash
-nim compile -r tests/integration.nim $@
+nim compile -r --forceBuild:on tests/integration.nim $@

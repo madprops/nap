@@ -1,9 +1,9 @@
+import std/os
+import std/parseopt
+import std/strformat
+import std/strutils
 import types
 import utils
-import os
-import parseopt
-import strformat
-import strutils
 export types
 
 # Array that holds all the arguments
