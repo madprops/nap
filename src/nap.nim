@@ -16,15 +16,13 @@ proc get_arg*(name:string): NapArg =
   return NapArg(name:"--undefined--")
 
 # Return all argument objects
-proc get_args*(): seq[NapArg] =
-  return opts
+proc get_args*(): seq[NapArg] = opts
 
 # Rest of arguments
 var tail: seq[string]
 
 # Return the rest of  the arguments
-proc get_argtail*(): seq[string] =
-  return tail
+proc get_argtail*(): seq[string] = tail
 
 # Holds the headers
 var xheaders: seq[string]
