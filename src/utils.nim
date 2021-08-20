@@ -1,9 +1,4 @@
-import std/editdistance as edistance
-import std/strformat
-import std/strutils
-import std/parseopt
-import std/terminal
-import std/nre
+import std/[editdistance, strformat, strutils, parseopt, terminal, nre]
 import types
 
 # Find the similarity between two strings
@@ -19,7 +14,7 @@ proc string_similarity*(s1:string, s2:string): float =
   if longer.len == 0:
     return 1.0
   
-  return float(longer.len - edistance.editDistance(longer, shorter)) / float(longer.len)
+  return float(longer.len - editDistance(longer, shorter)) / float(longer.len)
 
 # Different kinds of prints
 proc print*(s:string, kind:string) =
