@@ -18,24 +18,25 @@ proc get_arg*(name:string): NapArg =
 # Return all argument objects
 proc get_args*(): seq[NapArg] = opts
 
-# Rest of arguments
-var tail: seq[string]
+var
+  # Rest of arguments
+  tail: seq[string]
+
+  # Holds the headers
+  xheaders: seq[string]
+
+  # Holds the notes
+  xnotes: seq[string]
+
+  # Holds examples
+  xexamples: seq[Example]
+
+  # Used for argument checking
+  num_arguments = 0
+  num_required_arguments = 0
 
 # Return the rest of  the arguments
 proc get_argtail*(): seq[string] = tail
-
-# Holds the headers
-var xheaders: seq[string]
-
-# Holds the notes
-var xnotes: seq[string]
-
-# Holds examples
-var xexamples: seq[Example]
-
-# Used for argument checking
-var num_arguments = 0
-var num_required_arguments = 0
 
 # Available kinds of arguments
 let kinds = ["flag", "value", "argument"]
@@ -48,9 +49,10 @@ proc bye(message: string) =
 # Register an argument to be considered
 proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
   multiple=false, values:openarray[string]=[]): NapArg {.discardable.} =
-    var name = name.strip()
-    var kind = kind.strip()
-    var help = help.strip()
+    var
+      name = name.strip()
+      kind = kind.strip()
+      help = help.strip()
 
     if get_arg(name).name != "--undefined--":
       bye(&"'{name}' is already being used")
@@ -76,16 +78,15 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     
     # Get the internal kind 
     # s=short l=long
+    
     var ikind: string
       
     if kind == "flag":
       ikind = if name.len() == 1: "sflag"
         else: "lflag"
-      
     elif kind == "value":
       ikind = if name.len() == 1: "svalue"
         else: "lvalue"
-
     elif kind == "argument":
         ikind = "argument"
         inc(num_arguments)
@@ -121,6 +122,7 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
       else: ""
     
     var vals = newSeq[string]()
+
     for val in values:
       vals.add(val)
   
@@ -158,11 +160,12 @@ proc print_help*() =
   
   # Fill seqs with each kind
 
-  var sflags: seq[NapArg]
-  var lflags: seq[NapArg]
-  var svalues: seq[NapArg]
-  var lvalues: seq[NapArg]
-  var arguments: seq[NapArg]
+  var
+    sflags: seq[NapArg]
+    lflags: seq[NapArg]
+    svalues: seq[NapArg]
+    lvalues: seq[NapArg]
+    arguments: seq[NapArg]
 
   for opt in opts:
     case opt.ikind
@@ -214,8 +217,9 @@ proc print_help*() =
 
 # Try to find a close enough arg
 proc closest_arg(p:OptParser): (string, string) =
-  var highest: NapArg
-  var highest_n = 0.0
+  var
+    highest: NapArg
+    highest_n = 0.0
 
   for opt in opts:
     let n = string_similarity(p.key, opt.name)
@@ -232,10 +236,11 @@ proc closest_arg(p:OptParser): (string, string) =
 # And there are no conflicts
 # This is for flags and values
 proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
-  var lname = ""
-  var sname = ""
-  var lkind = ""
-  var skind = ""
+  var
+    lname = ""
+    sname = ""
+    lkind = ""
+    skind = ""
 
   if opt.ikind == "lflag" or
   opt.ikind == "lvalue":
@@ -252,7 +257,6 @@ proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
   if p.kind == cmdShortOption:
     if p.key == sname:
       return (true, skind)
-  
   else:
     if p.key == lname:
       return (true, lkind)
@@ -321,9 +325,13 @@ proc update_arg(p: OptParser) =
       return
     
   # If no match then exit
+
   var msg = ""
-  let ax = argstr(p)
-  let opt = get_arg(p.key)
+
+  let
+    ax = argstr(p)
+    opt = get_arg(p.key)
+
   if opt.name == "--undefined--":
     msg = &"'{ax[0]}' is not a valid {ax[1]}."
     let closest = closest_arg(p)
@@ -338,8 +346,10 @@ proc update_arg(p: OptParser) =
 # unecessary values or
 # missing arguments
 proc check_args() =
-  var exit = false
-  var nargs = 0
+  var
+    exit = false
+    nargs = 0
+
   for opt in opts:
 
     if opt.kind == "argument":
@@ -352,7 +362,6 @@ proc check_args() =
           (opt.multiple and opt.used and opt.values.len == 0):
             echo &"'{argstr_2(opt)[0]}' needs a value."
             exit = true
-    
     # Check for unecessary values
     elif opt.kind == "flag":
       if opt.value != "":

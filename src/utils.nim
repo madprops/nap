@@ -4,8 +4,9 @@ import types
 # Find the similarity between two strings
 # Closest to 1 is more similar
 proc string_similarity*(s1:string, s2:string): float =
-  var longer = s1
-  var shorter = s2
+  var
+    longer = s1
+    shorter = s2
 
   if s1.len < s2.len:
     longer = s2
