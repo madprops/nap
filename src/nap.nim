@@ -8,8 +8,10 @@ var opts: seq[NapArg]
 # Return an argument object
 proc get_arg*(name:string): NapArg =
   for opt in opts:
+
     if name == opt.name:
       return opt
+
     if name == opt.alt:
       return opt
 
@@ -144,10 +146,13 @@ proc print_help*() =
   # Print examples
   if xexamples.len > 0:
     print("Examples", "title")
+
     var i = 0
+
     for ex in xexamples:
       echo &"\n  {ex.title}:"
       inc(i)
+
       for line in ex.content.splitLines:
         if line.startsWith("#"):
           print(line, "comment")
@@ -183,9 +188,11 @@ proc print_help*() =
   # Print flags
   if sflags.len() > 0 or lflags.len() > 0:
     print("Flags", "title")
+
     for opt in sflags:
       echo &"\n  -{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
       print(opt.help, "content")
+
     for opt in lflags:
       echo &"\n  --{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
       print(opt.help, "content")
@@ -193,9 +200,11 @@ proc print_help*() =
   # Print values
   if svalues.len() > 0 or lvalues.len() > 0:
     print("Values", "title")
+
     for opt in svalues:
       echo &"\n  -{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
       print(opt.help, "content")
+
     for opt in lvalues:
       echo &"\n  --{opt.name}{xalt(opt.alt)}{xrequired(opt.required)}"
       print(opt.help, "content")
@@ -203,12 +212,14 @@ proc print_help*() =
   # Print arguments
   if arguments.len() > 0:
     print("Arguments", "title")
+
     for opt in arguments:
       echo &"\n  {opt.name}{xrequired(opt.required)}"
       print(opt.help, "content")
 
   if xnotes.len > 0:
     print("Notes", "title")
+
     for note in xnotes:
       echo ""
       print(note, "content")
@@ -223,6 +234,7 @@ proc closest_arg(p:OptParser): (string, string) =
 
   for opt in opts:
     let n = string_similarity(p.key, opt.name)
+
     if n > highest_n:
       highest = opt
       highest_n = n
@@ -270,9 +282,9 @@ proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
 
       if o.used: continue
 
-      if((o.ikind == "lflag" or o.ikind == "lvalue") and (o.name.startsWith(p.key))) or
-      ((o.aikind == "lflag" or o.aikind == "lvalue") and (o.alt.startsWith(p.key))):
-        if opt.required and not o.required:
+      if(((o.ikind == "lflag") or (o.ikind == "lvalue")) and (o.name.startsWith(p.key))) or
+      (((o.aikind == "lflag") or (o.aikind == "lvalue")) and (o.alt.startsWith(p.key))):
+        if opt.required and (not o.required):
           continue
         else: return (false, "")
 
@@ -280,15 +292,11 @@ proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
 
 # Check and update a supplied argument
 proc update_arg(p: OptParser) =
-  if p.kind == cmdArgument:
-    if num_arguments <= 0:
-      tail.add(p.key.strip())
-      return
-
   for opt in opts.mitems:
     let pm = prefix_match(p, opt)
-    if ( ( not opt.used or opt.kind == "flag" ) or opt.multiple ) and
-    ( opt.kind == "argument" or pm[0] ):
+
+    if (((not opt.used) or (opt.kind == "flag")) or opt.multiple) and
+    ((opt.kind == "argument") or pm[0]):
 
       # Do some checks
 
@@ -313,9 +321,10 @@ proc update_arg(p: OptParser) =
         dec(num_arguments)
       else:
         let v = p.val.strip()
+
         if v.len != 0:
           if opt.multiple:
-            if not opt.used and opt.values.len > 0:
+            if (not opt.used) and (opt.values.len > 0):
               opt.values.setLen(0)
             opt.values.add(v)
           else: opt.value = v
@@ -335,11 +344,13 @@ proc update_arg(p: OptParser) =
   if opt.name == "--undefined--":
     msg = &"'{ax[0]}' is not a valid {ax[1]}."
     let closest = closest_arg(p)
+
     if closest[0] != "":
       msg.add(&" Maybe you meant {closest[0]} {closest[1]} ?")
   else:
     if opt.used:
       msg = &"'{ax[0]}' was already used and is not set to multiple."
+
   bye(msg)
 
 # Check for missing or
@@ -351,15 +362,14 @@ proc check_args() =
     nargs = 0
 
   for opt in opts:
-
     if opt.kind == "argument":
       if opt.used: inc(nargs)
 
     # Check for required values
     if opt.kind == "value":
-        if (opt.required and not opt.used) or
-          (not opt.multiple and opt.used and opt.value == "") or
-          (opt.multiple and opt.used and opt.values.len == 0):
+        if (opt.required and (not opt.used)) or
+          ((not opt.multiple) and opt.used and (opt.value == "")) or
+          (opt.multiple and opt.used and (opt.values.len == 0)):
             echo &"'{argstr_2(opt)[0]}' needs a value."
             exit = true
     # Check for unecessary values
@@ -370,11 +380,13 @@ proc check_args() =
 
   if num_required_arguments > nargs:
     var n = num_required_arguments
+
     for opt in opts:
       if opt.kind == "argument":
-        if not opt.used and n > 0:
+        if (not opt.used) and (n > 0):
           echo &"'{opt.name}' argument is required."
           dec(n)
+
     exit = true
 
   if exit: quit(0)
@@ -390,16 +402,28 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
     quit(0)
 
   var p = initOptParser(params)
+  var arg = ""
+
+  for param in params:
+    if (not param.starts_with("-")):
+      arg = param
+      break
+    elif param.strip() == "-":
+      arg = param
+      break
+    elif param.strip() == "--":
+      arg = param
+      break
+
+  if arg != "":
+    tail.add(p.key.strip())
 
   while true:
     p.next()
+
     if p.kind == cmdEnd:
       break
     else:
-      if p.kind == cmdShortOption or p.kind == cmdLongOption:
-        if p.val.strip() == "":
-          continue
-
       update_arg(p)
 
   check_args()
