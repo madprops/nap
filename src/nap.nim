@@ -92,6 +92,7 @@ proc add_arg*(name="", kind="", required=false, help="", value="", alt="",
     elif kind == "argument":
         ikind = "argument"
         inc(num_arguments)
+
         if required:
           inc(num_required_arguments)
 
@@ -227,7 +228,7 @@ proc print_help*() =
   echo ""
 
 # Try to find a close enough arg
-proc closest_arg(p:OptParser): (string, string) =
+proc closest_arg(p:ArgItem): (string, string) =
   var
     highest: NapArg
     highest_n = 0.0
@@ -247,7 +248,7 @@ proc closest_arg(p:OptParser): (string, string) =
 # Check if prefix is partially matched
 # And there are no conflicts
 # This is for flags and values
-proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
+proc prefix_match(p:ArgItem, opt:NapArg): (bool, string) =
   var
     lname = ""
     sname = ""
@@ -291,7 +292,12 @@ proc prefix_match(p:OptParser, opt:NapArg): (bool, string) =
     return (true, lkind)
 
 # Check and update a supplied argument
-proc update_arg(p: OptParser) =
+proc update_arg(p:ArgItem) =
+  if p.kind == cmdArgument:
+    if num_arguments <= 0:
+      tail.add(p.key.strip())
+      return
+
   for opt in opts.mitems:
     let pm = prefix_match(p, opt)
 
@@ -402,32 +408,46 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
     quit(0)
 
   var p = initOptParser(params)
-  var arg = ""
+  var args: seq[string]
 
   for param in params:
     if (not param.starts_with("-")):
-      arg = param
+      args.add(param)
       break
     elif param.strip() == "-":
-      arg = param
+      args.add(param)
       break
     elif param.strip() == "--":
-      arg = param
+      args.add(param)
       break
 
-  if arg != "":
-    tail.add(p.key.strip())
+  if args.len > 0:
+    tail.add(args.join(" "))
 
   while true:
     p.next()
 
     if p.kind == cmdEnd:
       break
-    elif (p.kind == cmdShortOption) or (p.kind == cmdLongOption):
+
+    if (p.kind == cmdShortOption) or (p.kind == cmdLongOption):
       if p.val.strip() == "":
         continue
-    else:
-      update_arg(p)
+
+    if p.kind == cmdArgument:
+      continue
+
+    var item = ArgItem()
+    item.kind = p.kind
+    item.key = p.key
+    item.val = p.val
+    update_arg(item)
+
+  if args.len > 0:
+    var item = ArgItem()
+    item.kind = cmdArgument
+    item.key = args.join(" ")
+    update_arg(item)
 
   check_args()
 

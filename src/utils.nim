@@ -11,16 +11,16 @@ proc string_similarity*(s1:string, s2:string): float =
   if s1.len < s2.len:
     longer = s2
     shorter = s1
-  
+
   if longer.len == 0:
     return 1.0
-  
+
   return float(longer.len - editDistance(longer, shorter)) / float(longer.len)
 
 # Different kinds of prints
 proc print*(s:string, kind:string) =
   if s == "": return
-  
+
   case kind
   of "header":
     echo &"{ansiStyleCode(styleBright)}{ansiForegroundColorCode(fgGreen)}{s.strip()}{ansiResetCode}"
@@ -44,12 +44,12 @@ proc xrequired*(required: bool): string =
 proc xalt*(alt:string): string =
   if alt != "":
     let dash = if alt.len > 1: "--" else: "-"
-    return &" (or {dash}{alt})" 
-  else: 
+    return &" (or {dash}{alt})"
+  else:
     return ""
 
 # Util to change kinds to strings
-proc argstr*(p: OptParser): (string, string) =
+proc argstr*(p: ArgItem): (string, string) =
   if p.kind == cmdShortOption:
     if p.val == "":
       return (&"-{p.key}", "flag")
@@ -62,7 +62,7 @@ proc argstr*(p: OptParser): (string, string) =
       return (&"--{p.key}", "value flag")
   else:
     return (p.key, "argument")
-        
+
 # Util to change kinds to strings
 proc argstr_2*(p: NapArg): (string, string) =
   if p.kind == "flag":
