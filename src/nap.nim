@@ -423,6 +423,9 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
 
     if p.kind == cmdEnd:
       break
+    elif (p.kind == cmdShortOption) or (p.kind == cmdLongOption):
+      if p.val.strip() == "":
+        continue
     else:
       update_arg(p)
 
