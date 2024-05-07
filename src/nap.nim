@@ -295,7 +295,7 @@ proc prefix_match(p:ArgItem, opt:NapArg): (bool, string) =
 proc update_arg(p:ArgItem) =
   if p.kind == cmdArgument:
     if num_arguments <= 0:
-      tail.add(p.key.strip())
+      tail.add(p.key)
       return
 
   for opt in opts.mitems:
@@ -323,7 +323,7 @@ proc update_arg(p:ArgItem) =
       # Update
 
       if p.kind == cmdArgument:
-        opt.value = p.key.strip()
+        opt.value = p.key
         dec(num_arguments)
       else:
         let v = p.val.strip()
