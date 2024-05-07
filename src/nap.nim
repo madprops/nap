@@ -431,7 +431,7 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
       break
 
     if (p.kind == cmdShortOption) or (p.kind == cmdLongOption):
-      if p.val.strip() == "":
+      if p.key.strip() == "":
         continue
 
     if p.kind == cmdArgument:
