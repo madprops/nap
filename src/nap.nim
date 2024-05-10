@@ -409,23 +409,22 @@ proc parse_args*(params:seq[TaintedString]=commandLineParams()) =
 
   var p = initOptParser(params)
   var args: seq[string]
+  var flushed = false
 
   for param in params:
-    if (not param.starts_with("-")):
+    if flushed or (not param.starts_with("-")):
       args.add(param)
-      break
-    elif param.strip() == "-":
-      args.add(param)
-      break
-    elif param.strip() == "--":
-      args.add(param)
-      break
+    elif param == "--":
+      flushed = true
 
   if args.len > 0:
     tail.add(args.join(" "))
 
   while true:
     p.next()
+
+    if p.key == "":
+      break
 
     if p.kind == cmdEnd:
       break
